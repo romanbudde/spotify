@@ -279,10 +279,10 @@ app.get("/users", async(req, res) => {
 });
 
 // get all - sedes
-app.get("/sedes", async(req, res) => {
+app.get("/songs", async(req, res) => {
     try {
-        const allSedes = await pool.query("SELECT * from sede")
-        res.json(allSedes.rows);
+        const allSongs = await pool.query("SELECT * from song")
+        res.json(allSongs.rows);
     }
     catch (error) {
         console.error(error.message);

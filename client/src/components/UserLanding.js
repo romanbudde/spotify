@@ -9,6 +9,8 @@ import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faHouse } from '@fortawesome/free-solid-svg-icons';
 import ClientBottomBar from './ClientBottomBar';
+
+import {BsFillPlayCircleFill, BsFillPauseCircleFill, BsFillSkipStartCircleFill, BsSkipEndCircleFill, BsFillSkipEndCircleFill} from 'react-icons/bs';
 import Player from './Player';
 // import { faHouse as heartSolido } from '@fortawesome/free-regular-svg-icons'
 
@@ -18,11 +20,14 @@ const UserLanding = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSong, setCurrentSong] = useState(false);
 
+	console.log('songs: ', songs);
+	// console.log(`songs[0].song_path: http://localhost:5000/${songs[0].song_path}`, songs);
+	console.log(`songs[0]: `, songs[0] ? songs[0].song_path: '-----------adsdasdasdas-');
 
 	// get all users function
 	const getSongs = async () => {
         try {
-            const response = await fetch("http://localhost:5000/sedes/");
+            const response = await fetch("http://localhost:5000/songs/");
             const jsonData = await response.json();
 
             setSongs(jsonData);
@@ -63,7 +68,7 @@ const UserLanding = () => {
 	const navigate = useNavigate();
 	const cookies = new Cookies();
 
-	console.log("isAuthenticated: ", isAuthenticated);
+	// console.log("isAuthenticated: ", isAuthenticated);
 
 	const logout = () => {
 		// unset cookie
@@ -72,54 +77,37 @@ const UserLanding = () => {
 		navigate('/');
 	}
 
-	const redirectLanding = () => {
-		navigate('/landing');
-	}
-
-	const redirectVerSedes = () => {
-		navigate('/ver-sedes');
-	}
-
-	const redirectVerMisReservas = () => {
-		navigate('/mis-reservas');
-	}
-
-	const redirectProfile = () => {
-		navigate('/account');
-	}
-
 	if(isAuthenticated){
 		return (
 			<Fragment>
-				<div className='relative h'>
-					<div className='flex flex-row items-center justify-center relative border-b-2 border-b-gray-200'>
-						<h1 className='flex justify-center font-bold text-lg py-4'>
-							Cuidar
-						</h1>
+				<div className='relative h bg-black text-white'>
+					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 bg-black'>
+						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
 					</div>
-					<div className='space-y-5 p-10 my-2 w-1/2 mx-auto flex flex-col justify-center items-center'>
-						<button
-							className='w-full text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectVerSedes(e) }}
-						>
-							Ver las sedes
-						</button>
-						<button
-							className='w-full text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectVerMisReservas(e) }}
-						>
-							Ver mis reservas anteriores
-						</button>
-						<button
-							className='w-full text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectProfile(e) }}
-						>
-							Mi perfil
-						</button>
+					<div className='space-y-1 p-10 my-2 w-1/2 mx-auto flex flex-col justify-center items-center'>
+						<p className='font-medium text-lg mb-7'>Nuevas canciones que debes escuchar!</p>
+						{ songs.length > 0 && 
+							songs.map(song => (
+								<Fragment key={song.id}>
+									<div
+										className='flex flex-row gap-3 p-3 rounded-sm bg-green-900 justify-left items-center w-full hover:bg-green-800 cursor-pointer'
+										onClick={() => {
+											setCurrentSong(song);
+											setIsPlaying(false);
+											audioElem.current.currentTime = 0;
+										}}
+									>
+										<BsFillPlayCircleFill />
+										<p className=''>{song.name}</p>
+										<p className=''>Song path: {song.song_path}</p>
+									</div>
+								</Fragment>
+							))
+						}
 					</div>
 				</div>
 				<audio
-					src="http://localhost:5000/Habischman%20-%20Teris.mp3"
+					src={songs.length > 0 ? `http://localhost:5000/${currentSong.song_path}` : ''}
 					ref={audioElem}
 					onTimeUpdate={onPlaying}
 				/>

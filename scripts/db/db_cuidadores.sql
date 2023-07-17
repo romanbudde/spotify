@@ -38,21 +38,54 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: sede; Type: TABLE; Schema: public; Owner: postgres
+-- Name: playlist; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.sede (
-    id integer DEFAULT nextval('public.id'::regclass) NOT NULL,
-    address character varying NOT NULL,
-    max_cupo integer NOT NULL,
-    horarios json,
-    name character varying NOT NULL,
-    latitude character varying,
-    longitude character varying
+CREATE TABLE public.playlist (
+    id integer NOT NULL,
+    name integer NOT NULL,
+    song_ids integer NOT NULL
 );
 
 
-ALTER TABLE public.sede OWNER TO postgres;
+ALTER TABLE public.playlist OWNER TO postgres;
+
+--
+-- Name: playlist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.playlist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.playlist_id_seq OWNER TO postgres;
+
+--
+-- Name: playlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.playlist_id_seq OWNED BY public.playlist.id;
+
+
+--
+-- Name: song; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.song (
+    id integer DEFAULT nextval('public.id'::regclass) NOT NULL,
+    artist_id character varying,
+    name character varying,
+    genre_ids integer,
+    song_path character varying
+);
+
+
+ALTER TABLE public.song OWNER TO postgres;
 
 --
 -- Name: sede_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -73,7 +106,7 @@ ALTER TABLE public.sede_id_seq OWNER TO postgres;
 -- Name: sede_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.sede_id_seq OWNED BY public.sede.id;
+ALTER SEQUENCE public.sede_id_seq OWNED BY public.song.id;
 
 
 --
@@ -111,6 +144,41 @@ ALTER TABLE public.sede_reservations_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.sede_reservations_id_seq OWNED BY public.sede_reservations.id;
+
+
+--
+-- Name: user_playlist; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_playlist (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    playlist_id integer NOT NULL
+);
+
+
+ALTER TABLE public.user_playlist OWNER TO postgres;
+
+--
+-- Name: user_playlist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_playlist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_playlist_id_seq OWNER TO postgres;
+
+--
+-- Name: user_playlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_playlist_id_seq OWNED BY public.user_playlist.id;
 
 
 --
@@ -194,10 +262,24 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: playlist id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.playlist ALTER COLUMN id SET DEFAULT nextval('public.playlist_id_seq'::regclass);
+
+
+--
 -- Name: sede_reservations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sede_reservations ALTER COLUMN id SET DEFAULT nextval('public.sede_reservations_id_seq'::regclass);
+
+
+--
+-- Name: user_playlist id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_playlist ALTER COLUMN id SET DEFAULT nextval('public.user_playlist_id_seq'::regclass);
 
 
 --
@@ -215,18 +297,10 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Data for Name: sede; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: playlist; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.sede (id, address, max_cupo, horarios, name, latitude, longitude) FROM stdin;
-8	Soler 4000, C1425BWP CABA, Argentina	7	{"horarios":["01:00","02:00","04:00"]}	New sedeee jamaica	\N	\N
-9	Acevedo 865, Buenos Aires, Argentina	15	{}	Sede 91	\N	\N
-4	Av. San Martín 2595, A4400 Salta, Argentina	456	{"horarios":["00:00","09:00","10:00","12:00", "13:00","17:00","18:00","19:00"]}	Amici sede funes	\N	\N
-6	Mendoza 555, S2000BHK Rosario, Santa Fe, Argentina	15	{"horarios":["01:00","06:00","07:00","08:00","18:00","19:00","22:00","23:00"]}	NEW sedeee	\N	\N
-3	Av. Pellegrini 4500, S2002 Rosario, Santa Fe, Argentina	888	{"horarios":["00:00","01:00","02:00","07:00","08:00"]}	Amici sede oeste	-32.9488075	-60.6873757
-7	Necochea 1051, Rosario, Santa Fe, Argentina	25	{"horarios":["01:00","05:00","06:00","09:00","10:00","13:00","15:00","16:00","17:00"]}	New sede 2	-32.9539631	-60.6255006
-1	Av. San Martín 1575, S2000 Rosario, Santa Fe, Argentina	123	{"horarios":["00:00","01:00","02:00","03:00","04:00","10:00","14:00","16:00"]}	ASD mayuscula	-32.9562589	-60.6388613
-2	Av. San Martín 2595, S2000 Rosario, Santa Fe, Argentina	512	{"horarios":["00:00","02:00"]}	asd minuscula	-32.9676447	-60.6416295
+COPY public.playlist (id, name, song_ids) FROM stdin;
 \.
 
 
@@ -263,6 +337,25 @@ COPY public.sede_reservations (id, user_id, sede_id, horario, date) FROM stdin;
 28	50	1	01:00	12/07/2023
 29	50	1	01:00	12/07/2023
 30	50	6	01:00	12/07/2023
+\.
+
+
+--
+-- Data for Name: song; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.song (id, artist_id, name, genre_ids, song_path) FROM stdin;
+12	1	This Way	1	songs/Matt Guy - This Way.mp3
+11	1	Yukon	1	songs/Uddhav - Yukon (Original Mix).mp3
+10	1	Teris	1	songs/Habischman - Teris.mp3
+\.
+
+
+--
+-- Data for Name: user_playlist; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_playlist (id, user_id, playlist_id) FROM stdin;
 \.
 
 
@@ -305,7 +398,14 @@ COPY public.users (id, description, name, last_name, password, mail, type, creat
 -- Name: id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.id', 9, true);
+SELECT pg_catalog.setval('public.id', 12, true);
+
+
+--
+-- Name: playlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.playlist_id_seq', 1, false);
 
 
 --
@@ -323,6 +423,13 @@ SELECT pg_catalog.setval('public.sede_reservations_id_seq', 71, true);
 
 
 --
+-- Name: user_playlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_playlist_id_seq', 1, false);
+
+
+--
 -- Name: user_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -337,10 +444,18 @@ SELECT pg_catalog.setval('public.users_id_seq', 57, true);
 
 
 --
--- Name: sede sede_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: playlist playlist_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.sede
+ALTER TABLE ONLY public.playlist
+    ADD CONSTRAINT playlist_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: song sede_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.song
     ADD CONSTRAINT sede_pkey PRIMARY KEY (id);
 
 
@@ -350,6 +465,14 @@ ALTER TABLE ONLY public.sede
 
 ALTER TABLE ONLY public.sede_reservations
     ADD CONSTRAINT sede_reservations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_playlist user_playlist_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_playlist
+    ADD CONSTRAINT user_playlist_pkey PRIMARY KEY (id);
 
 
 --

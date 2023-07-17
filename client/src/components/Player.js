@@ -17,13 +17,17 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 	const { isAuthenticated } = useContext(AuthContext);
 
 	const numberToTime = (number) => {
-		const duration = moment.duration(number, 'seconds');
-		return moment.utc(duration.asMilliseconds()).format('mm:ss');
+		if (number && typeof number === 'number') {
+			const duration = moment.duration(number, 'seconds');
+			return moment.utc(duration.asMilliseconds()).format('mm:ss');
+		}
+		return '00:00';
 	};
 
-	console.log('audioElem: ', audioElem);
-	console.log('current song duration: ', numberToTime(currentSong.length));
-	console.log('current song progress: ', numberToTime(currentSong.progress));
+	// console.log('audioElem: ', audioElem);
+	// console.log('current song: ', currentSong);
+	// console.log('current song duration: ', numberToTime(currentSong.length));
+	// console.log('current song progress: ', numberToTime(currentSong.progress));
 
 	const clickRef = useRef();
 
@@ -49,19 +53,27 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 				<div className='flex flex-col justify-center items-center bg-black fixed bottom-0 w-full z-50'>
 					<div className='player_container'>
 						<div className='title'>
-							<p className='text-white font-medium text-lg my-2'>first song</p>
+							<p className='text-white font-medium text-lg my-2'>
+								{ audioElem.current ? 
+									currentSong.name :
+									'-'
+								}
+							</p>
 						</div>
 					</div>
 					<div className='navigation w-10/12 p-2'>
 						<div className='flex flex-row justify-between text-md pb-1'>
 							<p className='text-white'>
-								{ audioElem.current ? 
+								{ audioElem.current && audioElem.current.currentTime ? 
 									numberToTime(audioElem.current.currentTime) :
-									'--:--'
+									'00:00'
 								}
 							</p>
 							<p className='text-white'>
-								{numberToTime(currentSong.length)}
+								{ audioElem.current ?
+									numberToTime(currentSong.length) :
+									'00:00'
+								}
 							</p>
 						</div>
 						<div
@@ -71,7 +83,7 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 							>
 							<div
 								className='seek_bar w-1/2 rounded-3xl h-1.5 bg-green-500'
-								style={{width: `${currentSong.progress  + '%'}`}}
+								style={{width: `${currentSong.progress ? currentSong.progress + '%' : '0%'}`}}
 								>
 							</div>
 						</div>
