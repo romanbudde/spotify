@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+    server:
+      build: ./server
+      container_name: node_server_container
+      ports:
+        - 5000:5000
+      volumes:
+        - ./server:/app
+      # command: npm run startdevlt
+      # command: npm run startdev
+      command: npm start
+    client:
+      build: ./client
+      container_name: client_container
+      # environment:
+      #   <<: *common-variables
+      #   NODE_PATH: src
+      ports:
+        - 3000:3000
+      volumes:
+        - ./client/src:/app/src
+      links:
+        - server
+      command: npm start
+    db:
+      image: postgres
+      restart: always
+      ports:
+        - "5432:5432"
+      environment:
+          POSTGRES_PASSWORD: 123456
+      volumes:
+          - ./scripts/db:/docker-entrypoint-initdb.d
+          # - ./scripts/db:/var/lib/postgresql/data
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080
+
+    # ngrok:
+    #   image: wernight/ngrok
+    #   volumes:
+    #     - ./ngrok.yml:/home/ngrok/.ngrok2/ngrok.yml
+    #   ports:
+    #     - "4040:4040"
+    #   command: ["ngrok", "http", "server:5000"]

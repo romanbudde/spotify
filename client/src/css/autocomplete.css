@@ -1,0 +1,10 @@
+.geoapify-autocomplete-input {
+	border-radius: 8px;
+	min-width: 100%;
+	padding: 25px 30px 25px 10px;
+	font-size: 0.875rem;
+}
+
+.geocoder-container {
+	min-width: 100%;
+}
