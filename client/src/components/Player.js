@@ -21,8 +21,9 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 		return moment.utc(duration.asMilliseconds()).format('mm:ss');
 	};
 
-	console.log('current song: ', currentSong);
+	console.log('audioElem: ', audioElem);
 	console.log('current song duration: ', numberToTime(currentSong.length));
+	console.log('current song progress: ', numberToTime(currentSong.progress));
 
 	const clickRef = useRef();
 
@@ -53,8 +54,15 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 					</div>
 					<div className='navigation w-10/12 p-2'>
 						<div className='flex flex-row justify-between text-md pb-1'>
-							<p className='text-white'>{numberToTime(audioElem.current.currentTime)}</p>
-							<p className='text-white'>{numberToTime(currentSong.length)}</p>
+							<p className='text-white'>
+								{ audioElem.current ? 
+									numberToTime(audioElem.current.currentTime) :
+									'--:--'
+								}
+							</p>
+							<p className='text-white'>
+								{numberToTime(currentSong.length)}
+							</p>
 						</div>
 						<div
 							className='navigation_wrapper bg-gray-600 cursor-pointer'
