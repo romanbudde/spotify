@@ -12,7 +12,7 @@ import MisReservasPage from './routes/MisReservasPage';
 import AccountPage from './routes/AccountPage';
 import SuccessPage from './routes/SuccessPage';
 import FailurePage from './routes/FailurePage';
-import SedesAdminPage from './routes/SedesAdminPage';
+import CancionesAdminPage from './routes/CancionesAdminPage';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 
 import './App.css';
@@ -106,10 +106,10 @@ const App = () => {
 				} 
 				/>
 				<Route 
-				path="/sedes-admin"
+				path="/canciones-admin"
 				element={
 					<>
-					{ <SedesAdminPage /> }
+					{ <CancionesAdminPage /> }
 					</>
 				} 
 				/>

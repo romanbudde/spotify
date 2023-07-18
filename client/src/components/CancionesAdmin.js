@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import AddSede from './AddSede';
+import AddCancion from './AddCancion';
 import User from './User';
 import EditUser from './EditUser';
 import EditSede from './EditSede';
@@ -27,7 +27,7 @@ import Select from 'react-select';
 import mercado_pago_icon from "../images/mercado-pago-icon.svg";
 import cash_bill_icon from "../images/cash-bill.svg";
 
-const SedesAdmin = () => {
+const CancionesAdmin = () => {
 	const navigate = useNavigate();
 	const cookies = new Cookies();
 	const moment = require('moment');
@@ -50,7 +50,7 @@ const SedesAdmin = () => {
 
 	// console.log('currentPosts: ', currentPosts);
 
-	const handleAddSedeModalOpen = () => {
+	const handleAddCancionModalOpen = () => {
         setShowAddSedeModal(true);
     }
     const handleAddSedeModalClose = () => {
@@ -155,9 +155,9 @@ const SedesAdmin = () => {
 						<div className='flex flex-row justify-center w-full'>
 							<button
 								className='bg-transparent text-green-500 font-semibold py-2 px-4 border border-green-600 rounded-lg w-2/3 my-5'
-								onClick={handleAddSedeModalOpen}
+								onClick={handleAddCancionModalOpen}
 							>
-								Crear sede
+								Crear cancion
 							</button>
 							{/* <button
 								className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
@@ -166,7 +166,7 @@ const SedesAdmin = () => {
 								Buscar usuarios
 							</button> */}
 						</div>
-						<AddSede
+						<AddCancion
 							sedes={sedes}
 							setSedes={setSedes}
 							displayedSedes={displayedSedes}
@@ -185,7 +185,7 @@ const SedesAdmin = () => {
 						{currentPosts.length > 0 && (
 							currentPosts.map(sede => (
 								<>
-									<SedeItem 
+									<SedeItem
 										key={sede.id}
 										sede={sede}
 										sedes={sedes}
@@ -208,4 +208,4 @@ const SedesAdmin = () => {
 	}
 }
 
-export default SedesAdmin;
+export default CancionesAdmin;

@@ -6,28 +6,22 @@ import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-g
 import '@geoapify/geocoder-autocomplete/styles/minimal.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from "react-google-autocomplete";
-import { faCircleXmark, faCircleCheck, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faCircleCheck, faPenToSquare, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import FechasHorarios from './FechasHorarios';
 
-const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedSedes} ) => {
+const AddCancion = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedSedes} ) => {
 	const { isAuthenticated } = useContext(AuthContext);
-    // const [description, setDescription] = useState('');
-    // const [email, setEmail] = useState('');
-    // const [firstname, setFirstname] = useState('');
-    // const [lastname, setLastname] = useState('');
-    // const [userType, setUserType] = useState('');
-
-	const [address, setAddress] = useState('');
     const [name, setName] = useState('');
-    const [id, setId] = useState('');
-    const [cupo, setCupo] = useState('');
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
-	const [horarios, setHorarios] = useState([]);
+    const [artists, setArtists] = useState('');
+    const [genres, setGenres] = useState('');
+    const [file, setFile] = useState('');
+	const [songUploadError, setSongUploadError] = useState(false);
+	const [songUploadSuccess, setSongUploadSuccess] = useState(false);
+	const [songUploadMessage, setSongUploadMessage] = useState('');
 	const [editDataMessageError, setEditDataMessageError] = useState(false);
 	const [displayEditDataMessage, setDisplayEditDataMessage] = useState(false);
 	const [checkedHorarios, setCheckedHorarios] = useState([]);
@@ -37,30 +31,24 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 			.min(2, 'El nombre es demasiado corto!')
 			.max(50, 'El nombre es demasiado largo!')
 			.required('Campo requerido!'),
-		cupo: Yup.number()
-			.min(1, 'Muy pocos cupos!')
-			.max(999, 'Demiados cupos!')
-			.required('Campo requerido!'),
-		address: Yup.string()
-			.min(4, 'Dirección demasiado corta!')
-			.max(100, 'La dirección es demasiado larga')
-			.matches(/^.*\b\w+\b.*\d.*,.*/, 'La dirección no posee altura de la calle.')
-			.required('Campo requerido!'),
+		artist: Yup.array()
+			.max(25, 'Demiados artistas!'),
+			// .required('Campo requerido!'),
+		genre: Yup.array()
+			.max(15, 'La dirección es demasiado larga'),
+			// .required('Campo requerido!'),
 	});
-
-	const handleCheckboxChange = (horario) => {
-        console.log('clicked an horario: ', horario);
-        if (checkedHorarios.includes(horario)) {
-			setCheckedHorarios(checkedHorarios.filter((item) => item !== horario).sort());
-			setHorarios(checkedHorarios.filter((item) => item !== horario).sort());
-        } else {
-			setCheckedHorarios([...checkedHorarios, horario].sort());
-			setHorarios([...checkedHorarios, horario].sort());
-        }
-    };
 
 	const navigate = useNavigate();
 	const cookies = new Cookies();
+
+	const handleFileChange = (e) => {
+		const file = {
+		  preview: URL.createObjectURL(e.target.files[0]),
+		  data: e.target.files[0],
+		}
+		setFile(file)
+	}
 
 	const optionsUnfiltered = [
 		{ value: '00:00', label: '00:00' },
@@ -93,8 +81,8 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
         setDisplayEditDataMessage(false);
     }
 
-    const onSubmitSede = async (values) => {
-        console.log('----------------- onSubmitSede -------------- ');
+    const onSubmitSong = async (values) => {
+        console.log('----------------- onSubmitSong -------------- ');
 
 		const authToken = cookies.get('auth-token');
 		if(!authToken) {
@@ -102,13 +90,37 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 		}
 		
         try {
+
+			// upload song file first
+			// e.preventDefault();
+			let formData = new FormData();
+			formData.append('file', file.data);
+			// formData.append('song_id', userId);
+			const response_file = await fetch('http://localhost:5000/upload_song', {
+			method: 'POST',
+			body: formData,
+			}).then(response_file => response_file.json())
+			.then(result => {
+				if (!result.error){
+					console.log('------- no hay error al subir la cancion');
+					// setStatus(result.statusText);
+					setSongUploadError(false);
+					setSongUploadSuccess(true);
+					setSongUploadMessage('Archivo subido con éxito!');
+				}
+				else {
+					console.log('------- hubo un error al subir la cancion');
+					setSongUploadSuccess(false);
+					setSongUploadError(true);
+					setSongUploadMessage(result.error);
+				}
+			})
+
             const body = { ...values };
-			body.latitude = latitude;
-			body.longitude = longitude;
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
-            let newSede = {};
-            const response = await fetch("http://localhost:5000/sedes/", {
+            let newSong = {};
+            const response = await fetch("http://localhost:5000/songs/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -120,16 +132,16 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
                     if(result.id){
                         console.log('add user result: ');
                         console.log(result);
-                        newSede = result;
+                        newSong = result;
                     }
                 });
 
             // console.log(response.json();
 
-            setSedes(newSede.id ? [...sedes, newSede] : sedes);
-            setDisplayedSedes(newSede.id ? [...sedes, newSede] : sedes);
+            setSedes(newSong.id ? [...sedes, newSong] : sedes);
+            setDisplayedSedes(newSong.id ? [...sedes, newSong] : sedes);
 			
-			if (newSede.id){
+			if (newSong.id){
 				setEditDataMessageError(false);
 				setDisplayEditDataMessage(true);
 			}
@@ -149,10 +161,10 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 				<Formik
 					// innerRef={formik} // Add a ref to the formik object
 					initialValues={{
-						address: address,
 						name: name,
-						cupo: cupo,
-						horarios: horarios,
+						artists: artists,
+						genres: genres,
+						file: file
 					}}
 					validationSchema={UpdateSchema}
 					// onSubmit={onSubmitUser}
@@ -161,7 +173,7 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 						// setFieldValue('address', address);
 						console.log('submit form!');
 						console.log(values);
-						onSubmitSede(values);
+						onSubmitSong(values);
 					}}
 				>
 					{({ errors, touched, setFieldValue, setFieldError }) => (
@@ -179,7 +191,7 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 										</label>
 										<Field
 											name="name"
-											placeholder="ej: Sede Centro"
+											placeholder="ej: Welcome to the Jungle"
 											className={`${errors.name && touched.name ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
 											'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`} 
 										/>
@@ -191,94 +203,67 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 									</div>
 									<div className='flex flex-col py-2'>
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Cupo máximo
+											Artista
 										</label>
-										<Field name="cupo" placeholder="ej: Gomez" className={`${errors.cupo && touched.cupo ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
+										<Field name="artists" placeholder="ej: Drake" className={`${errors.artists && touched.artists ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
 										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
-											{errors.cupo && touched.cupo ? (
+											{errors.artists && touched.artists ? (
 												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.cupo}
+													{errors.artists}
 												</div>
 											) : null}
-									</div>
-									
-									<div className='flex flex-col py-1'>
-										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Dirección
-										</label>
-										<Autocomplete
-											apiKey={'AIzaSyDdEqsnFUhTgQJmNN1t4iyn3VhMLJY6Yk4'}
-											debounce={1000}
-											name='address'
-											placeholder='Escriba su dirección'
-											className={`${errors.address && touched.address ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-											'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}
-											style={{ width: "100%" }}
-											onChange={(e) => {
-												setFieldValue('address', e.target.value);
-												// setFieldError('address', 'Selecciona una direccion del menu desplegable!');
-												console.log(e.target.value)
-											}}
-											onPlaceSelected={(place) => {
-												console.log(place);
-												console.log('formated address: ', place.formatted_address ? place.formatted_address : '');
-												setLatitude(place.geometry.location.lat());
-												setLongitude(place.geometry.location.lng());
-												setFieldValue('address', place.formatted_address ? place.formatted_address : '');
-											}}
-											options={{
-												types: ["address"],
-												componentRestrictions: { country: "ar" },
-											}}
-											defaultValue={address}
-										/>
-										{errors.address && touched.address ? (
-											<div className='text-red-500 font-normal w-full text-sm text-left'>
-												{errors.address}
-											</div>
-										) : null}
 									</div>
 									<div className='flex flex-col py-2'>
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Horarios
+											Generos
 										</label>
-										<Field readOnly value={horarios} name="horarios" placeholder="ej: 09:00, 10:00, 11:00, 12:00" className={`${errors.horarios && touched.horarios ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'} overflow-x-scroll`}/>
-											{errors.horarios && touched.horarios ? (
+										<Field name="genres" placeholder="ej: Rock" className={`${errors.genres && touched.genres ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
+										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
+											{errors.genres && touched.genres ? (
 												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.horarios}
+													{errors.genres}
 												</div>
 											) : null}
-										<ul className="text-black flex flex-col w-full rounded-md max-h-44 mt-2 overflow-scroll">
-											{ optionsUnfiltered.map((horario, index) => (
-												<li className='flex flex-row items-center p-7 gap-2 relative' key={index}>
-													<label htmlFor={horario.value} className='w-full flex items-center cursor-pointer'>
-														<span className={`absolute p-5 text-md inset-0 transition ${checkedHorarios.includes(horario.value) ? 'bg-green-400' : 'bg-gray-300'}`}>
-															{horario.value}
-														</span>
-														<input
-															type='checkbox'
-															className='hidden'
-															value={horario.value}
-															name={horario.value}
-															id={horario.value}
-															// onClick={ (e) => console.log('clicked an horario: ', horario.value)}
-															onChange={() => handleCheckboxChange(horario.value)}
-														/>
-													</label>
-												</li>
-											
-											))}
-										</ul>
-										{/* <Horarios
-											s
-										/> */}
 									</div>
+									<div className='flex flex-col py-2'>
+										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
+											Archivo musica
+										</label>
+
+										<div className='relative'>
+											<input
+												type='file'
+												name='file'
+												id='file'
+												onChange={ (e) => {
+													handleFileChange(e);
+													setFieldValue('file changed', e.target.value);
+													console.log(e.target)
+												}}
+												placeholder='Elija el archivo'
+												className='z-50 opacity-90 focus:outline-none w-full h-full'>	
+											</input>
+										</div>
+										{songUploadError && (
+											<div className='bg-red-500 mx-5 p-2 rounded-lg'>
+												<p className='text-center text-white font-medium'>{songUploadMessage}</p>
+											</div>
+										)}
+										{songUploadSuccess && (
+											<div className='p-2 rounded-lg mt-3'>
+												<p className='text-left text-green-500 font-medium'>{songUploadMessage}</p>
+											</div>
+										)}
+										{/* { file.data && (
+											<button className='bg-gray-800 text-white py-3 px-10 font-medium text-sm' type='submit'>Guardar cancion</button>
+										)} */}
+									</div>
+									
 									<button 
 										type="submit"
 										className="w-full text-white bg-gradient-to-r from-green-400 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-12"
 									>
-										Guardar mis datos
+										Guardar cancion
 									</button>
 								</div>
 							</div>
@@ -290,7 +275,7 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Error!</p>
-										<p className='text-white text-center font-medium'>No se ha podido crear la sede.</p>
+										<p className='text-white text-center font-medium'>No se ha podido crear la cancion.</p>
 										<FontAwesomeIcon icon={faCircleXmark} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-red-800 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'
@@ -309,7 +294,7 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Genial!</p>
-										<p className='text-white text-center font-medium'>Sede creada con éxito</p>
+										<p className='text-white text-center font-medium'>Cancion creada con éxito</p>
 										<FontAwesomeIcon icon={faCircleCheck} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-green-600 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'
@@ -331,4 +316,4 @@ const AddSede = ( {sedes, setSedes, show, onClose, displayedSedes, setDisplayedS
 	}
 }
 
-export default AddSede;
+export default AddCancion;

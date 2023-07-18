@@ -66,6 +66,19 @@ const upload = multer({
     }
 });
 
+const audioStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/songs')
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname)
+    },
+});
+
+const upload_audio = multer({ 
+    storage: audioStorage
+});
+
 passport.use(new LocalStrategy(
 	{usernameField:"email", passwordField:"password"},
     async function(email, password, done) {
@@ -432,23 +445,23 @@ app.put("/sedes/:id", async(req, res) => {
 });
 
 // create - una sede
-app.post('/sedes', async(req, res) => {
+app.post('/songs', async(req, res) => {
     try {
         console.log('---- backend post /sedes ----');
         console.log(req.body);
-        const { address, name, cupo, horarios, latitude, longitude } = req.body;
+        const { name, artist, genres, file } = req.body;
         
         console.log('---- current date ----');
         const created_at = new Date();
         console.log(created_at);
 
-        const newSede = await pool.query(
-            "INSERT INTO sede (address, max_cupo, name, horarios, latitude, longitude) VALUES($1, $2, $3, $4, $5, $6) RETURNING *", 
-            [address, cupo, name, horarios, latitude, longitude]
+        const newSong = await pool.query(
+            "INSERT INTO song (name, artist, genres, file) VALUES($1, $2, $3, $4) RETURNING *", 
+            [name, artist, genres, file]
         );
 
         // res.json(req.body);
-        res.json(newSede.rows[0]);
+        res.json(newSong.rows[0]);
     }
     catch (error) {
         console.error(error.message);
@@ -524,21 +537,21 @@ app.get("/users_filtered", async(req, res) => {
     }
 });
 
-app.post('/upload_image', upload.single('file'), async (req, res) => {
-    console.log('at upload image functionality.');
+app.post('/upload_song', upload_audio.single('file'), async (req, res) => {
+    console.log('at upload song functionality.');
+    console.log('req.file is: ', req.file);
 
-    if (req.file.size > 5 * 1024 * 1024) {
+    if (req.file.size > 100 * 1024 * 1024) {
         console.log('El tamaño de la imagen supera el límite permitido.');
         return res.status(400).json({ error: 'El tamaño de la imagen supera el límite permitido' });
     }
 
     if (
-        req.file.mimetype !== 'image/jpeg' &&
-        req.file.mimetype !== 'image/png' &&
-        req.file.mimetype !== 'image/webp'
+        req.file.mimetype !== 'audio/mpeg' &&
+        req.file.mimetype !== 'audio/wav'
     ) {
-        console.log('El archivo no es una imagen válida.');
-        return res.status(400).json({ error: 'La imagen está en un formato inválido (permitidos: .png, .jpg, .webp).' });
+        console.log('El archivo no es una cancion en formato válido.');
+        return res.status(400).json({ error: 'La cancion está en un formato inválido (permitidos: .wav, mp3, mp4).' });
     }
 
     // update user's profile_picture_url value.
@@ -548,10 +561,10 @@ app.post('/upload_image', upload.single('file'), async (req, res) => {
     console.log('req.file is: ', req.file);
     console.log('req.file.filename is: ', req.file.filename);
     console.log('req.file.path is: ', req.file.path);
-    const updateUser = await pool.query(
-        "UPDATE users SET profile_picture_url = $1 WHERE id = $2 RETURNING *", 
-        [file_name, user_id]
-    );
+    // const uploadSong = await pool.query(
+    //     "INSERT INTO song (artists_ids, genre_ids, name, song_path) VALUES($1, $2, $3, $4) RETURNING *",
+    //     [artists_ids, genres_ids, name, song_path]
+    // );
     
     res.json({})
 });
