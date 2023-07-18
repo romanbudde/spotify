@@ -78,9 +78,9 @@ ALTER SEQUENCE public.playlist_id_seq OWNED BY public.playlist.id;
 
 CREATE TABLE public.song (
     id integer DEFAULT nextval('public.id'::regclass) NOT NULL,
-    artist_id character varying,
+    artists_id character varying,
     name character varying,
-    genre_ids integer,
+    genres_ids integer,
     song_path character varying
 );
 
@@ -344,7 +344,7 @@ COPY public.sede_reservations (id, user_id, sede_id, horario, date) FROM stdin;
 -- Data for Name: song; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.song (id, artist_id, name, genre_ids, song_path) FROM stdin;
+COPY public.song (id, artists_id, name, genres_ids, song_path) FROM stdin;
 12	1	This Way	1	songs/Matt Guy - This Way.mp3
 11	1	Yukon	1	songs/Uddhav - Yukon (Original Mix).mp3
 10	1	Teris	1	songs/Habischman - Teris.mp3
