@@ -16,8 +16,80 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
 CREATE DATABASE db_cuidadores;
 \connect db_cuidadores;
+
+--
+-- Name: artist; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.artist (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.artist OWNER TO postgres;
+
+--
+-- Name: artist_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.artist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.artist_id_seq OWNER TO postgres;
+
+--
+-- Name: artist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.artist_id_seq OWNED BY public.artist.id;
+
+
+--
+-- Name: genre; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.genre (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE public.genre OWNER TO postgres;
+
+--
+-- Name: genre_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.genre_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.genre_id_seq OWNER TO postgres;
+
+--
+-- Name: genre_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.genre_id_seq OWNED BY public.genre.id;
+
 
 --
 -- Name: id; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -32,10 +104,6 @@ CREATE SEQUENCE public.id
 
 
 ALTER TABLE public.id OWNER TO postgres;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
 
 --
 -- Name: playlist; Type: TABLE; Schema: public; Owner: postgres
@@ -78,10 +146,11 @@ ALTER SEQUENCE public.playlist_id_seq OWNED BY public.playlist.id;
 
 CREATE TABLE public.song (
     id integer DEFAULT nextval('public.id'::regclass) NOT NULL,
-    artists_id character varying,
+    artists_ids character varying,
     name character varying,
     genres_ids integer,
-    song_path character varying
+    song_path character varying,
+    enabled boolean
 );
 
 
@@ -262,6 +331,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: artist id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artist ALTER COLUMN id SET DEFAULT nextval('public.artist_id_seq'::regclass);
+
+
+--
+-- Name: genre id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.genre ALTER COLUMN id SET DEFAULT nextval('public.genre_id_seq'::regclass);
+
+
+--
 -- Name: playlist id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -294,6 +377,30 @@ ALTER TABLE ONLY public.user_type ALTER COLUMN id SET DEFAULT nextval('public.us
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: artist; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.artist (id, name) FROM stdin;
+3	Justin Bieber
+4	Eric Prydz
+1	Drakee
+2	RihannaaA
+\.
+
+
+--
+-- Data for Name: genre; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.genre (id, name) FROM stdin;
+1	Rock
+2	EDM
+3	Trap
+4	Hip Hop
+\.
 
 
 --
@@ -344,10 +451,11 @@ COPY public.sede_reservations (id, user_id, sede_id, horario, date) FROM stdin;
 -- Data for Name: song; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.song (id, artists_id, name, genres_ids, song_path) FROM stdin;
-12	1	This Way	1	songs/Matt Guy - This Way.mp3
-11	1	Yukon	1	songs/Uddhav - Yukon (Original Mix).mp3
-10	1	Teris	1	songs/Habischman - Teris.mp3
+COPY public.song (id, artists_ids, name, genres_ids, song_path, enabled) FROM stdin;
+12	1	This Way	1	songs/Matt Guy - This Way.mp3	t
+10	1	Teris	1	songs/Habischman - Teris.mp3	t
+11	1	Yukon	1	songs/Uddhav - Yukon (Original Mix).mp3	t
+20	2	Testing	2	songs/The Killer Golden Jazz Alpaca.mp3	t
 \.
 
 
@@ -395,10 +503,24 @@ COPY public.users (id, description, name, last_name, password, mail, type, creat
 
 
 --
+-- Name: artist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.artist_id_seq', 4, true);
+
+
+--
+-- Name: genre_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.genre_id_seq', 4, true);
+
+
+--
 -- Name: id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.id', 12, true);
+SELECT pg_catalog.setval('public.id', 20, true);
 
 
 --
@@ -441,6 +563,22 @@ SELECT pg_catalog.setval('public.user_type_id_seq', 3, true);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 57, true);
+
+
+--
+-- Name: artist artist_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artist
+    ADD CONSTRAINT artist_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: genre genre_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.genre
+    ADD CONSTRAINT genre_pkey PRIMARY KEY (id);
 
 
 --
