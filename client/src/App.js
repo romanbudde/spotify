@@ -13,6 +13,8 @@ import AccountPage from './routes/AccountPage';
 import SuccessPage from './routes/SuccessPage';
 import FailurePage from './routes/FailurePage';
 import CancionesAdminPage from './routes/CancionesAdminPage';
+import ArtistasAdminPage from './routes/ArtistasAdminPage';
+import GenerosAdminPage from './routes/GenerosAdminPage';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 
 import './App.css';
@@ -110,6 +112,22 @@ const App = () => {
 				element={
 					<>
 					{ <CancionesAdminPage /> }
+					</>
+				} 
+				/>
+				<Route 
+				path="/artistas-admin"
+				element={
+					<>
+					{ <ArtistasAdminPage /> }
+					</>
+				} 
+				/>
+				<Route 
+				path="/generos-admin"
+				element={
+					<>
+					{ <GenerosAdminPage /> }
 					</>
 				} 
 				/>

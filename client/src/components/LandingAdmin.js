@@ -32,8 +32,16 @@ const LandingAdmin = () => {
 		navigate('/users');
 	}
 
-	const redirectSedes = () => {
-		navigate('/sedes-admin');
+	const redirectCanciones = () => {
+		navigate('/canciones-admin');
+	}
+
+	const redirectArtistas = () => {
+		navigate('/artistas-admin');
+	}
+
+	const redirectGeneros = () => {
+		navigate('/generos-admin');
 	}
 
 	if(isAuthenticated){
@@ -45,22 +53,22 @@ const LandingAdmin = () => {
 						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
 						<p className='text-md text-gray-500 ml-3'>Panel de Administrador</p>
 					</div>
-					<div className='space-y-5 p-7 my-2 mx-auto flex flex-col justify-center items-center bg-black'>
+					<div className='space-y-5 p-7 my-2 mx-auto w-1/2 flex flex-col justify-center items-center bg-black'>
 						<button
 							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectSedes(e) }}
+							onClick={ (e) => { redirectCanciones(e) }}
 						>
 							Canciones
 						</button>
 						<button
 							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectSedes(e) }}
+							onClick={ (e) => { redirectArtistas(e) }}
 						>
 							Artistas
 						</button>
 						<button
 							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectSedes(e) }}
+							onClick={ (e) => { redirectGeneros(e) }}
 						>
 							Generos
 						</button>

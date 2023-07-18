@@ -13,69 +13,24 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import FechasHorarios from './FechasHorarios';
 
-const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplayedSongs} ) => {
+const AddGenero = ( {genres, setGenres, show, onClose, displayedGenres, setDisplayedGenres} ) => {
 	const { isAuthenticated } = useContext(AuthContext);
     const [name, setName] = useState('');
-    const [artists, setArtists] = useState('');
-    const [genres, setGenres] = useState('');
-    const [file, setFile] = useState('');
-	const [songUploadError, setSongUploadError] = useState(false);
-	const [songUploadSuccess, setSongUploadSuccess] = useState(false);
-	const [songUploadMessage, setSongUploadMessage] = useState('');
+	const [genreUploadError, setGenreUploadError] = useState(false);
+	const [genreUploadSuccess, setGenreUploadSuccess] = useState(false);
+	const [genreUploadMessage, setGenreUploadMessage] = useState('');
 	const [editDataMessageError, setEditDataMessageError] = useState(false);
 	const [displayEditDataMessage, setDisplayEditDataMessage] = useState(false);
-	const [checkedHorarios, setCheckedHorarios] = useState([]);
 	
 	const UpdateSchema = Yup.object().shape({
 		name: Yup.string()
 			.min(2, 'El nombre es demasiado corto!')
 			.max(50, 'El nombre es demasiado largo!')
-			.required('Campo requerido!'),
-		artist: Yup.array()
-			.max(25, 'Demiados artistas!'),
-			// .required('Campo requerido!'),
-		genre: Yup.array()
-			.max(15, 'La dirección es demasiado larga'),
-			// .required('Campo requerido!'),
+			.required('Campo requerido!')
 	});
 
 	const navigate = useNavigate();
 	const cookies = new Cookies();
-
-	const handleFileChange = (e) => {
-		const file = {
-		  preview: URL.createObjectURL(e.target.files[0]),
-		  data: e.target.files[0],
-		}
-		setFile(file)
-	}
-
-	const optionsUnfiltered = [
-		{ value: '00:00', label: '00:00' },
-		{ value: '01:00', label: '01:00' },
-		{ value: '02:00', label: '02:00' },
-		{ value: '03:00', label: '03:00' },
-		{ value: '04:00', label: '04:00' },
-		{ value: '05:00', label: '05:00' },
-		{ value: '06:00', label: '06:00' },
-		{ value: '07:00', label: '07:00' },
-		{ value: '08:00', label: '08:00' },
-		{ value: '09:00', label: '09:00' },
-		{ value: '10:00', label: '10:00' },
-		{ value: '11:00', label: '11:00' },
-		{ value: '12:00', label: '12:00' },
-		{ value: '13:00', label: '13:00' },
-		{ value: '14:00', label: '14:00' },
-		{ value: '15:00', label: '15:00' },
-		{ value: '16:00', label: '16:00' },
-		{ value: '17:00', label: '17:00' },
-		{ value: '18:00', label: '18:00' },
-		{ value: '19:00', label: '19:00' },
-		{ value: '20:00', label: '20:00' },
-		{ value: '21:00', label: '21:00' },
-		{ value: '22:00', label: '22:00' },
-		{ value: '23:00', label: '23:00' },
-	];
 
 	const closeEditDataMessage = () => {
         setDisplayEditDataMessage(false);
@@ -90,40 +45,11 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 		}
 		
         try {
-
-			// upload song file first
-			// e.preventDefault();
-			console.log('file: ', file);
-			console.log('file.data.name: ', file.data.name);
-			let formData = new FormData();
-			formData.append('file', file.data);
-			// formData.append('song_id', userId);
-			const response_file = await fetch('http://localhost:5000/upload_song', {
-				method: 'POST',
-				body: formData,
-			}).then(response_file => response_file.json())
-			.then(result => {
-				if (!result.error){
-					console.log('------- no hay error al subir la cancion');
-					// setStatus(result.statusText);
-					setSongUploadError(false);
-					setSongUploadSuccess(true);
-					setSongUploadMessage('Archivo subido con éxito!');
-				}
-				else {
-					console.log('------- hubo un error al subir la cancion');
-					setSongUploadSuccess(false);
-					setSongUploadError(true);
-					setSongUploadMessage(result.error);
-				}
-			})
-
             const body = { ...values };
-			body.file = file.data.name;
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
-            let newSong = {};
-            const response = await fetch("http://localhost:5000/songs/", {
+            let newGenre = {};
+            const response = await fetch("http://localhost:5000/genre/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -135,16 +61,16 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
                     if(result.id){
                         console.log('add user result: ');
                         console.log(result);
-                        newSong = result;
+                        newGenre = result;
                     }
                 });
 
             // console.log(response.json();
 
-            setSongs(newSong.id ? [...songs, newSong] : songs);
-            setDisplayedSongs(newSong.id ? [...songs, newSong] : songs);
+            setGenres(newGenre.id ? [...genres, newGenre] : genres);
+            setDisplayedGenres(newGenre.id ? [...genres, newGenre] : genres);
 			
-			if (newSong.id){
+			if (newGenre.id){
 				setEditDataMessageError(false);
 				setDisplayEditDataMessage(true);
 			}
@@ -164,10 +90,7 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 				<Formik
 					// innerRef={formik} // Add a ref to the formik object
 					initialValues={{
-						name: name,
-						artists: artists,
-						genres: genres,
-						file: file
+						name: name
 					}}
 					validationSchema={UpdateSchema}
 					// onSubmit={onSubmitUser}
@@ -187,14 +110,14 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 										<svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path></svg>
 										<span className="sr-only">Close modal</span>
 									</button>
-									<p className='font-bold text-center my-2'>Datos de la cancion</p>
+									<p className='font-bold text-center my-2'>Datos del genero</p>
 									<div className='flex flex-col py-2'>
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
 											Nombre
 										</label>
 										<Field
 											name="name"
-											placeholder="ej: Welcome to the Jungle"
+											placeholder="ej: Drake"
 											className={`${errors.name && touched.name ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
 											'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`} 
 										/>
@@ -204,69 +127,12 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 												</div>
 											) : null}
 									</div>
-									<div className='flex flex-col py-2'>
-										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Artista
-										</label>
-										<Field name="artists" placeholder="ej: Drake" className={`${errors.artists && touched.artists ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
-											{errors.artists && touched.artists ? (
-												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.artists}
-												</div>
-											) : null}
-									</div>
-									<div className='flex flex-col py-2'>
-										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Generos
-										</label>
-										<Field name="genres" placeholder="ej: Rock" className={`${errors.genres && touched.genres ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
-											{errors.genres && touched.genres ? (
-												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.genres}
-												</div>
-											) : null}
-									</div>
-									<div className='flex flex-col py-2'>
-										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-											Archivo musica
-										</label>
-
-										<div className='relative'>
-											<input
-												type='file'
-												name='file'
-												id='file'
-												onChange={ (e) => {
-													handleFileChange(e);
-													setFieldValue('file changed', e.target.value);
-													console.log(e.target)
-												}}
-												placeholder='Elija el archivo'
-												className='z-50 opacity-90 focus:outline-none w-full h-full'>	
-											</input>
-										</div>
-										{songUploadError && (
-											<div className='bg-red-500 mx-5 p-2 rounded-lg'>
-												<p className='text-center text-white font-medium'>{songUploadMessage}</p>
-											</div>
-										)}
-										{songUploadSuccess && (
-											<div className='p-2 rounded-lg mt-3'>
-												<p className='text-left text-green-500 font-medium'>{songUploadMessage}</p>
-											</div>
-										)}
-										{/* { file.data && (
-											<button className='bg-gray-800 text-white py-3 px-10 font-medium text-sm' type='submit'>Guardar cancion</button>
-										)} */}
-									</div>
 									
 									<button 
 										type="submit"
 										className="w-full text-white bg-gradient-to-r from-green-400 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-12"
 									>
-										Guardar cancion
+										Guardar genero
 									</button>
 								</div>
 							</div>
@@ -319,4 +185,4 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 	}
 }
 
-export default AddCancion;
+export default AddGenero;

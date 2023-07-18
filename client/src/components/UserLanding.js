@@ -17,12 +17,14 @@ import Player from './Player';
 const UserLanding = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 	const [songs, setSongs] = useState([]);
+	const [genres, setGenres] = useState([]);
+	const [artists, setArtists] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSong, setCurrentSong] = useState(false);
 
 	console.log('songs: ', songs);
-	// console.log(`songs[0].song_path: http://localhost:5000/${songs[0].song_path}`, songs);
-	console.log(`songs[0]: `, songs[0] ? songs[0].song_path: '-----------adsdasdasdas-');
+	console.log('artists: ', artists);
+	console.log('genres: ', genres);
 
 	// get all users function
 	const getSongs = async () => {
@@ -37,9 +39,35 @@ const UserLanding = () => {
         }
     };
 
+	// get all users function
+	const getGenres = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/genres/");
+            const jsonData = await response.json();
+
+            setGenres(jsonData);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+	// get all users function
+	const getArtists = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/artists/");
+            const jsonData = await response.json();
+
+            setArtists(jsonData);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
 	// when page loads, get Songs
     useEffect(() => {
         getSongs();
+		getGenres();
+		getArtists();
     }, []);
 
 	// actually pause or play audio.
@@ -88,20 +116,34 @@ const UserLanding = () => {
 						<p className='font-medium text-lg mb-7'>Nuevas canciones que debes escuchar!</p>
 						{ songs.length > 0 && 
 							songs.map(song => (
-								<Fragment key={song.id}>
-									<div
-										className='flex flex-row gap-3 p-3 rounded-sm bg-green-900 justify-left items-center w-full hover:bg-green-800 cursor-pointer'
-										onClick={() => {
-											setCurrentSong(song);
-											setIsPlaying(false);
-											audioElem.current.currentTime = 0;
-										}}
-									>
-										<BsFillPlayCircleFill />
-										<p className=''>{song.name}</p>
-										<p className=''>Song path: {song.song_path}</p>
-									</div>
-								</Fragment>
+								song.enabled && (
+									<Fragment key={song.id}>
+										<div
+											className='flex flex-row gap-3 p-3 rounded-sm bg-green-900 justify-left items-center w-full hover:bg-green-800 cursor-pointer'
+											onClick={() => {
+												setCurrentSong(song);
+												setIsPlaying(false);
+												audioElem.current.currentTime = 0;
+											}}
+										>
+											<BsFillPlayCircleFill />
+											<p className=''>{song.name}</p>
+											<p className=''>{artists.map(artist => (
+												song.artists_ids.map(song_artist_id => (
+													song_artist_id === artist.id ? (
+														<p>{artist.name}</p>
+													) : (
+														<p>Artista desconocido</p>
+													)
+												))
+											))}
+											</p>
+											
+										</div>
+									</Fragment>
+
+								)
+
 							))
 						}
 					</div>

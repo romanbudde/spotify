@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import AddCancion from './AddCancion';
+import AddGenero from './AddGenero';
 import User from './User';
 import EditUser from './EditUser';
 import EditSede from './EditSede';
@@ -20,25 +20,24 @@ import '../css/datepicker.css';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import ClientBottomBar from './ClientBottomBar';
-import CancionItem from './CancionItem';
+import GeneroItem from './GeneroItem';
 import Paginate from './Paginate';
 import Select from 'react-select';
 
 import mercado_pago_icon from "../images/mercado-pago-icon.svg";
 import cash_bill_icon from "../images/cash-bill.svg";
 
-const CancionesAdmin = () => {
+const GenerosAdmin = () => {
 	const navigate = useNavigate();
 	const cookies = new Cookies();
 	const moment = require('moment');
 
 	const { isAuthenticated, userId } = useContext(AuthContext);
-    const [songs, setSongs] = useState([]);
-    const [displayedSongs, setDisplayedSongs] = useState([]);
-	const [selectedDatesInterval, setSelectedDatesInterval] = useState({});
+    const [genres, setGenres] = useState([]);
+    const [displayedGenres, setDisplayedGenres] = useState([]);
     const [user, setUser] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
-	const [showAddSongModal, setShowAddSongModal] = useState(false);
+	const [showAddGenreModal, setShowAddGenreModal] = useState(false);
 	
 	// -- Pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -46,15 +45,15 @@ const CancionesAdmin = () => {
 
 	const indexOfLastPost = currentPage * postsPerPage;
 	const indexOfFirstPost = indexOfLastPost - postsPerPage;
-	const currentPosts = displayedSongs.slice(indexOfFirstPost, indexOfLastPost);
+	const currentPosts = displayedGenres.slice(indexOfFirstPost, indexOfLastPost);
 
 	// console.log('currentPosts: ', currentPosts);
 
-	const handleAddCancionModalOpen = () => {
-        setShowAddSongModal(true);
+	const handleAddGenreModalOpen = () => {
+        setShowAddGenreModal(true);
     }
-    const handleAddSongModalClose = () => {
-        setShowAddSongModal(false); 
+    const handleAddGenreModalClose = () => {
+        setShowAddGenreModal(false); 
     }
 
 	const handleShow = () => setShowEditModal(true);
@@ -101,10 +100,6 @@ const CancionesAdmin = () => {
 		return formattedDate;
 	};
 
-	
-
-	console.log('selected dates interval: ', selectedDatesInterval);
-
     const getUserData = async () => {
 		const response = await fetch("http://localhost:5000/users/" + userId);
 		const jsonData = await response.json();
@@ -116,13 +111,13 @@ const CancionesAdmin = () => {
 	}
 
 	// get all users function
-	const getSongs = async () => {
+	const getGenres = async () => {
         try {
-            const response = await fetch("http://localhost:5000/songs/");
+            const response = await fetch("http://localhost:5000/genres/");
             const jsonData = await response.json();
 
-            setSongs(jsonData);
-			setDisplayedSongs(jsonData);
+            setGenres(jsonData);
+			setDisplayedGenres(jsonData);
         } catch (error) {
             console.error(error.message);
         }
@@ -131,10 +126,10 @@ const CancionesAdmin = () => {
     // when page loads, get user data
     useEffect(() => {
         getUserData();
-		getSongs();
+		getGenres();
     }, []);
 
-    console.log('songs: ', songs);
+    console.log('genres: ', genres);
 	
 
 	if(isAuthenticated){
@@ -148,16 +143,16 @@ const CancionesAdmin = () => {
 							icon={faChevronLeft}
 							onClick={ redirectLanding }
 						/>
-						<h1 className='flex justify-center font-bold text-lg py-4'>Canciones</h1>
+						<h1 className='flex justify-center font-bold text-lg py-4'>Generos</h1>
 					</div>
 					<div className='mb-28'>
 
 						<div className='flex flex-row justify-center w-full'>
 							<button
 								className='bg-transparent text-green-500 font-semibold py-2 px-4 border border-green-600 rounded-lg w-2/3 my-5'
-								onClick={handleAddCancionModalOpen}
+								onClick={handleAddGenreModalOpen}
 							>
-								Crear cancion
+								Crear genero
 							</button>
 							{/* <button
 								className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
@@ -166,33 +161,33 @@ const CancionesAdmin = () => {
 								Buscar usuarios
 							</button> */}
 						</div>
-						<AddCancion
-							songs={songs}
-							setSongs={setSongs}
-							displayedSongs={displayedSongs}
-							setDisplayedSongs={setDisplayedSongs}
-							show={showAddSongModal}
-							onClose={handleAddSongModalClose}
+						<AddGenero
+							genres={genres}
+							setGenres={setGenres}
+							displayedGenres={displayedGenres}
+							setDisplayedGenres={setDisplayedGenres}
+							show={showAddGenreModal}
+							onClose={handleAddGenreModalClose}
 						/>
 						
 						<Paginate
 							postsPerPage={postsPerPage}
-							totalPosts={displayedSongs.length}
+							totalPosts={displayedGenres.length}
 							paginate={paginate}
 							currentPage={currentPage}
 							setCurrentPage={setCurrentPage}
 						/>
 						<div className='w-full flex flex-col items-center'>
 							{currentPosts.length > 0 && (
-								currentPosts.map(song => (
+								currentPosts.map(genre => (
 									<>
-										<CancionItem
-											key={song.id}
-											song={song}
-											songs={songs}
-											setSongs={setSongs}
-											displayedSongs={displayedSongs}
-											setDisplayedSongs={setDisplayedSongs}
+										<GeneroItem
+											key={genre.id}
+											genre={genre}
+											genres={genres}
+											setGenres={setGenres}
+											displayedGenres={displayedGenres}
+											setDisplayedGenres={setDisplayedGenres}
 										/>
 										
 									</>
@@ -210,4 +205,4 @@ const CancionesAdmin = () => {
 	}
 }
 
-export default CancionesAdmin;
+export default GenerosAdmin;

@@ -291,11 +291,49 @@ app.get("/users", async(req, res) => {
     }
 });
 
-// get all - sedes
+// get all - songs
 app.get("/songs", async(req, res) => {
     try {
         const allSongs = await pool.query("SELECT * from song")
         res.json(allSongs.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// get all - artists
+app.get("/artists", async(req, res) => {
+    try {
+        const allArtists = await pool.query("SELECT * from artist")
+        res.json(allArtists.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// update individual - cuidador
+app.put("/artist/:id", async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        console.log('name: ', name);
+        console.log('id: ', id);
+        const updateArtist = await pool.query(
+            "UPDATE artist SET name = $1 WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+
+        console.log('updateArtist: ', updateArtist.rows[0])
+
+        if(updateArtist.rowCount > 0){
+            res.json(updateArtist.rows[0]);
+            // res.json('asd');
+        }
+        else {
+            res.json('Oops! No sede with given ID (' + id + ') has been found.');
+        }
     }
     catch (error) {
         console.error(error.message);
@@ -416,23 +454,21 @@ app.post("/reservas", async(req, res) => {
 });
 
 // update individual - cuidador
-app.put("/sedes/:id", async(req, res) => {
+app.put("/songs/:id", async(req, res) => {
     try {
         const { id } = req.params;
-        const { address, name, cupo, horarios, latitude, longitude } = req.body;
-        console.log('address: ', address);
-        console.log('name: ', name);
-        console.log('cupo: ', cupo);
-        console.log('horarios: ', horarios);
-        const updateSede = await pool.query(
-            "UPDATE sede SET address = $1, max_cupo = $2, name = $3, horarios = $4, latitude = $5, longitude = $6 WHERE id = $7 RETURNING *",
-            [address, cupo, name, horarios, latitude, longitude, id]
+        const { enabled } = req.body;
+        console.log('enabled: ', enabled);
+        console.log('id: ', id);
+        const updateSong = await pool.query(
+            "UPDATE song SET enabled = $1 WHERE id = $2 RETURNING *",
+            [enabled, id]
         );
 
-        console.log('updateSede: ', updateSede)
+        console.log('updateSong: ', updateSong.rows[0])
 
-        if(updateSede.rowCount > 0){
-            res.json(updateSede.rows[0]);
+        if(updateSong.rowCount > 0){
+            res.json(updateSong.rows[0]);
             // res.json('asd');
         }
         else {
@@ -444,20 +480,83 @@ app.put("/sedes/:id", async(req, res) => {
     }
 });
 
-// create - una sede
+// create - una cancion
 app.post('/songs', async(req, res) => {
     try {
-        console.log('---- backend post /sedes ----');
+        console.log('---- backend post /songs ----');
         console.log(req.body);
-        const { name, artist, genres, file } = req.body;
-        
+        const { name, artists, genres, file } = req.body;
+
+        console.log('---- current date ----');
+        const created_at = new Date();
+        console.log(created_at);
+
+        let song_path = 'songs/' + file;
+
+        console.log('file: ', file);
+
+        const newSong = await pool.query(
+            "INSERT INTO song (name, artists_ids, genres_ids, song_path) VALUES($1, $2, $3, $4) RETURNING *", 
+            [name, artists, genres, song_path]
+        );
+
+        // res.json(req.body);
+        res.json(newSong.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// delete (by id) individual - cuidador
+app.delete("/songs/:id", async(req, res) => {
+    try {
+        const {id} = req.params;
+        console.log('id to delete: ', id);
+        const deleteSong = await pool.query(
+            "UPDATE song SET enabled = false WHERE id = $1 RETURNING *", 
+            [id]
+        );
+
+        console.log('deleted song: ', deleteSong.rows[0]);
+
+        if(deleteSong.rowCount > 0){
+            res.json(deleteSong);
+        }
+        else {
+            res.json('Oops! No song with given ID (' + id + ') has been found.');
+        }
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// get all - genres
+app.get("/genres", async(req, res) => {
+    try {
+        const allGenres = await pool.query("SELECT * from genre")
+        res.json(allGenres.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// create - una cancion
+app.post('/genre', async(req, res) => {
+    try {
+        console.log('---- backend post /genre ----');
+        console.log(req.body);
+        const { name } = req.body;
+
         console.log('---- current date ----');
         const created_at = new Date();
         console.log(created_at);
 
         const newSong = await pool.query(
-            "INSERT INTO song (name, artist, genres, file) VALUES($1, $2, $3, $4) RETURNING *", 
-            [name, artist, genres, file]
+            "INSERT INTO genre (name) VALUES($1) RETURNING *", 
+            [name]
         );
 
         // res.json(req.body);
