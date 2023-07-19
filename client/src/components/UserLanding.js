@@ -129,7 +129,7 @@ const UserLanding = () => {
 											<BsFillPlayCircleFill />
 											<p className=''>{song.name}</p>
 											<p className=''>{artists.map(artist => (
-												song.artists_ids.map(song_artist_id => (
+												song.artists_ids.ids.map(song_artist_id => (
 													song_artist_id === artist.id ? (
 														<p>{artist.name}</p>
 													) : (

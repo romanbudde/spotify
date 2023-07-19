@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -12,11 +12,14 @@ import { AuthContext } from './AuthContext';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import FechasHorarios from './FechasHorarios';
+import Select from 'react-select';
 
 const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplayedSongs} ) => {
 	const { isAuthenticated } = useContext(AuthContext);
     const [name, setName] = useState('');
     const [artists, setArtists] = useState('');
+	const [artistsData, setArtistsData] = useState();
+	const [optionsArtists, setOptionsArtists] = useState();
     const [genres, setGenres] = useState('');
     const [file, setFile] = useState('');
 	const [songUploadError, setSongUploadError] = useState(false);
@@ -50,32 +53,34 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 		setFile(file)
 	}
 
-	const optionsUnfiltered = [
-		{ value: '00:00', label: '00:00' },
-		{ value: '01:00', label: '01:00' },
-		{ value: '02:00', label: '02:00' },
-		{ value: '03:00', label: '03:00' },
-		{ value: '04:00', label: '04:00' },
-		{ value: '05:00', label: '05:00' },
-		{ value: '06:00', label: '06:00' },
-		{ value: '07:00', label: '07:00' },
-		{ value: '08:00', label: '08:00' },
-		{ value: '09:00', label: '09:00' },
-		{ value: '10:00', label: '10:00' },
-		{ value: '11:00', label: '11:00' },
-		{ value: '12:00', label: '12:00' },
-		{ value: '13:00', label: '13:00' },
-		{ value: '14:00', label: '14:00' },
-		{ value: '15:00', label: '15:00' },
-		{ value: '16:00', label: '16:00' },
-		{ value: '17:00', label: '17:00' },
-		{ value: '18:00', label: '18:00' },
-		{ value: '19:00', label: '19:00' },
-		{ value: '20:00', label: '20:00' },
-		{ value: '21:00', label: '21:00' },
-		{ value: '22:00', label: '22:00' },
-		{ value: '23:00', label: '23:00' },
-	];
+	// get all users function
+	const getArtists = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/artists/");
+            const jsonData = await response.json();
+
+            setArtistsData(jsonData);
+
+			let formattedOptionsArtists = jsonData.map(artist => ({
+				value: String(artist.id),
+				label: artist.name
+			}));
+
+			setOptionsArtists(formattedOptionsArtists);
+
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+	console.log('------- artists data: ', artistsData)
+
+	// when page loads, get Songs
+    useEffect(() => {
+        // getSongs();
+		// getGenres();
+		getArtists();
+    }, []);
 
 	const closeEditDataMessage = () => {
         setDisplayEditDataMessage(false);
@@ -208,13 +213,34 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
 											Artista
 										</label>
-										<Field name="artists" placeholder="ej: Drake" className={`${errors.artists && touched.artists ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
-											{errors.artists && touched.artists ? (
-												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.artists}
-												</div>
-											) : null}
+										<Select
+											// defaultValue={}
+											// onChange={ }
+											placeholder={'Artistas'}
+											options={optionsArtists}
+											maxMenuHeight={240}
+											className='rounded-md w-full'
+											isMulti={true}
+											isSearchable={true}
+											onChange={(values) => {
+												setFieldValue('artists', values);
+												console.log(values);
+											}}
+											theme={(theme) => ({
+												...theme,
+												borderRadius: 10,
+												colors: {
+												...theme.colors,
+												primary25: '#8FD5FF',
+												primary: 'black',
+												},
+											})}
+										/>
+										{/* {errors.artists && touched.artists ? (
+											<div className='text-red-500 font-normal w-full text-sm text-left'>
+												{errors.artists}
+											</div>
+										) : null} */}
 									</div>
 									<div className='flex flex-col py-2'>
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
