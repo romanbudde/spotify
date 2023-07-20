@@ -146,9 +146,9 @@ ALTER SEQUENCE public.playlist_id_seq OWNED BY public.playlist.id;
 
 CREATE TABLE public.song (
     id integer DEFAULT nextval('public.id'::regclass) NOT NULL,
-    artists_ids character varying,
+    artists_ids json,
     name character varying,
-    genres_ids integer,
+    genres_ids json,
     song_path character varying,
     enabled boolean
 );
@@ -386,8 +386,9 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 COPY public.artist (id, name) FROM stdin;
 3	Justin Bieber
 4	Eric Prydz
-1	Drakee
-2	RihannaaA
+1	Drake
+2	Rihanna
+5	CryJaxx
 \.
 
 
@@ -452,10 +453,12 @@ COPY public.sede_reservations (id, user_id, sede_id, horario, date) FROM stdin;
 --
 
 COPY public.song (id, artists_ids, name, genres_ids, song_path, enabled) FROM stdin;
-12	1	This Way	1	songs/Matt Guy - This Way.mp3	t
-10	1	Teris	1	songs/Habischman - Teris.mp3	t
-11	1	Yukon	1	songs/Uddhav - Yukon (Original Mix).mp3	t
-20	2	Testing	2	songs/The Killer Golden Jazz Alpaca.mp3	t
+21	{"ids":["3","1"]}	awdasd	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	\N
+20	{"ids":["3","1"]}\r\n	Testing	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	t
+11	{"ids":["3","1"]}	Yukon	{"ids":["1","3","4"]}	songs/Uddhav - Yukon (Original Mix).mp3	t
+10	{"ids":["3","1"]}	Teris	{"ids":["1","3","4"]}	songs/Habischman - Teris.mp3	t
+12	{"ids": ["1", "2"]}	This Way	{"ids":["1","3","4"]}	songs/Matt Guy - This Way.mp3	t
+23	{"ids":["5"]}	Candy Shop Remix	{"ids":["2","4"]}	songs/CryJaxx - Candy Shop (feat. Junior Charles).mp3	t
 \.
 
 
@@ -506,7 +509,7 @@ COPY public.users (id, description, name, last_name, password, mail, type, creat
 -- Name: artist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.artist_id_seq', 4, true);
+SELECT pg_catalog.setval('public.artist_id_seq', 5, true);
 
 
 --
@@ -520,7 +523,7 @@ SELECT pg_catalog.setval('public.genre_id_seq', 4, true);
 -- Name: id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.id', 20, true);
+SELECT pg_catalog.setval('public.id', 24, true);
 
 
 --
