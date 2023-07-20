@@ -353,37 +353,58 @@ app.get("/users/:id", async(req, res) => {
     }
 });
 
-// get a reservation by user id or sede_id
-app.get("/reservas", async(req, res) => {
+// get playlists by user id
+app.get("/playlists", async(req, res) => {
     try {
-        const { user_id, sede_id } = req.query;
+        const { user_id } = req.query;
 
-        let reservas;
+        let playlists;
 
-        if (user_id && sede_id) {
-            // Both user_id and sede_id are provided
-            reservas = await pool.query(
-                "SELECT * from sede_reservations WHERE user_id = $1 AND sede_id = $2",
-                [user_id, sede_id]
-            );
-        } else if (user_id) {
-            // Only user_id is provided
-            reservas = await pool.query(
-                "SELECT * from sede_reservations WHERE user_id = $1",
-                [user_id]
-            );
-        } else if (sede_id) {
-            // Only sede_id is provided
-            reservas = await pool.query(
-                "SELECT * from sede_reservations WHERE sede_id = $1",
-                [sede_id]
-            );
-        } else {
-            res.status(400).json({"message": "Error: ni user_id ni sede_id fueron especificados."});
+        playlists = await pool.query(
+            "SELECT * from playlist WHERE user_id = $1",
+            [user_id]
+        );
+
+        if(!user_id) {
+            res.status(400).json({"message": "Error: user_id no fue especificado."});
         }
 
-        console.log('reservas: ', reservas.rows);
-        res.json(reservas.rows);
+        console.log('playlists: ', playlists.rows);
+        res.json(playlists.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// create - una playlist
+app.post('/playlist', async(req, res) => {
+    try {
+        console.log('---- backend post /playlist ----');
+        console.log(req.body);
+        const { song, playlist_name, user_id } = req.body;
+
+        let songs_ids = {
+            "ids": [song.id]
+        }
+
+        let name;
+        if(!playlist_name){
+            name = song.name;
+        }
+        else {
+            name = playlist_name;
+        }
+
+        console.log('songs_ids: ', songs_ids)
+
+        const newPlaylist = await pool.query(
+            "INSERT INTO playlist (name, user_id, songs_ids) VALUES($1, $2, $3) RETURNING *", 
+            [name, user_id, songs_ids]
+        );
+
+        // res.json(req.body);
+        res.json(newPlaylist.rows[0]);
     }
     catch (error) {
         console.error(error.message);

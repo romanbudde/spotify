@@ -112,7 +112,8 @@ ALTER TABLE public.id OWNER TO postgres;
 CREATE TABLE public.playlist (
     id integer NOT NULL,
     name integer NOT NULL,
-    song_ids integer NOT NULL
+    songs_ids integer,
+    user_id integer NOT NULL
 );
 
 
@@ -408,7 +409,7 @@ COPY public.genre (id, name) FROM stdin;
 -- Data for Name: playlist; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.playlist (id, name, song_ids) FROM stdin;
+COPY public.playlist (id, name, songs_ids, user_id) FROM stdin;
 \.
 
 
