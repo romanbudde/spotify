@@ -111,9 +111,9 @@ ALTER TABLE public.id OWNER TO postgres;
 
 CREATE TABLE public.playlist (
     id integer NOT NULL,
-    name integer NOT NULL,
-    songs_ids integer,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    name character varying NOT NULL,
+    songs_ids json
 );
 
 
@@ -409,7 +409,10 @@ COPY public.genre (id, name) FROM stdin;
 -- Data for Name: playlist; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.playlist (id, name, songs_ids, user_id) FROM stdin;
+COPY public.playlist (id, user_id, name, songs_ids) FROM stdin;
+1	50	Yukon	{"ids":[11]}
+2	50	This Way	{"ids":[12]}
+3	50	Teris	{"ids":[10]}
 \.
 
 
@@ -531,7 +534,7 @@ SELECT pg_catalog.setval('public.id', 24, true);
 -- Name: playlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.playlist_id_seq', 1, false);
+SELECT pg_catalog.setval('public.playlist_id_seq', 3, true);
 
 
 --
