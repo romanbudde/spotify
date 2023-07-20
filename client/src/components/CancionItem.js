@@ -6,9 +6,12 @@ import moment from 'moment';
 import EditSede from './EditSede';
 import UserEditData from './UserEditData';
 
-const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs }) => {
+const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs, artists, genres }) => {
 
     console.log('song at songItem: ', song);
+    console.log('artists at songItem: ', artists);
+    console.log('genres at songItem: ', genres);
+    console.log('song.artists_ids.ids at songItem: ', song.artists_ids.ids);
 
     const [showEditModal, setShowEditModal] = useState(false);
     
@@ -84,16 +87,47 @@ const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs }) 
     return (
         <>
             <div
-                className={`p-5 m-2 w-1/2 rounded-md flex flex-col items-start text-black bg-green-300 font-medium shadow-lg`}
+                className={`p-5 m-2 w-1/2 rounded-md flex flex-col items-start text-black bg-green-300 font-medium shadow-lg relative`}
                 key={song.id}
             >
-                <p>{song.name}</p>
-                <p>
-                    Archivo musica: {song.song_path}
-                </p>
+                <div className='flex flex-row absolute right-5 gap-3'>
+                    { genres && (
+                        <>
+                            {genres.map(genre => (
+                                song.genres_ids.ids.map(song_genre_id => (
+                                    parseInt(song_genre_id) === genre.id ? (
+                                        <p className='bg-gray-200 p-1 rounded-md text-sm'>{genre.name}</p>
+                                    ) : (
+                                        <></>
+                                    )
+                                ))))
+                            }
+                        </>
+                    )}
+                </div>
+                <div className='mt-7 flex flex-col gap-1 mb-3'>
+                    <p className='font-semibold'>{song.name}</p>
+                    <p>
+                        Archivo musica: {song.song_path}
+                    </p>
 
-                <p>Artistas: {song.artists_ids}</p>
-                <p>Generos: {song.genres_ids}</p>
+                    { artists && (
+                        <div className='flex flex-row gap-2'>
+                            {artists.map(artist => (
+                                song.artists_ids.ids.map(song_artist_id => (
+                                    parseInt(song_artist_id) === artist.id ? (
+                                        <p className='bg-black text-gray-300 p-0.5 rounded-sm'>{artist.name}</p>
+                                    ) : (
+                                        <></>
+                                    )
+                                ))))
+                            }
+                        </div>
+                    )}
+                </div>
+
+                {/* <p>Artistas: {song.artists_ids}</p> */}
+                {/* <p>Generos: {song.genres_ids}</p> */}
 
                 {
                     song.enabled ? (

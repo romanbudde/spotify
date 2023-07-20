@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faHouse } from '@fortawesome/free-solid-svg-icons';
 import ClientBottomBar from './ClientBottomBar';
 
-import {BsFillPlayCircleFill, BsFillPauseCircleFill, BsFillSkipStartCircleFill, BsSkipEndCircleFill, BsFillSkipEndCircleFill} from 'react-icons/bs';
+import {BsFillPlayCircleFill, BsThreeDots, BsFillPauseCircleFill, BsFillSkipStartCircleFill, BsSkipEndCircleFill, BsFillSkipEndCircleFill} from 'react-icons/bs';
 import Player from './Player';
 // import { faHouse as heartSolido } from '@fortawesome/free-regular-svg-icons'
 
@@ -119,26 +119,29 @@ const UserLanding = () => {
 								song.enabled && (
 									<Fragment key={song.id}>
 										<div
-											className='flex flex-row gap-3 p-3 rounded-sm bg-green-900 justify-left items-center w-full hover:bg-green-800 cursor-pointer'
+											className='flex flex-row gap-3 p-3 rounded-sm bg-green-900 justify-left items-center w-full hover:bg-green-800 cursor-pointer relative'
 											onClick={() => {
 												setCurrentSong(song);
 												setIsPlaying(false);
 												audioElem.current.currentTime = 0;
 											}}
 										>
-											<BsFillPlayCircleFill />
-											<p className=''>{song.name}</p>
-											<p className=''>{artists.map(artist => (
-												song.artists_ids.ids.map(song_artist_id => (
-													song_artist_id === artist.id ? (
-														<p>{artist.name}</p>
-													) : (
-														<p>Artista desconocido</p>
-													)
-												))
-											))}
-											</p>
-											
+											<BsFillPlayCircleFill className='text-2xl'/>
+											<div className='flex flex-col'>
+												<p className=''>{song.name}</p>
+												<div className='flex flex-row gap-2'>
+													{artists.map(artist => (
+														song.artists_ids.ids.map(song_artist_id => (
+															parseInt(song_artist_id) === artist.id ? (
+																<p className='text-gray-400 text-sm bg-black p-0.5 rounded-sm opacity-90'>{artist.name}</p>
+															) : (
+																<></>
+															)
+														))
+													))}
+												</div>
+											</div>
+											<BsThreeDots className='text-2xl text-gray-300 absolute right-3'/>
 										</div>
 									</Fragment>
 

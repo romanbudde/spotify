@@ -35,7 +35,14 @@ const CancionesAdmin = () => {
 	const { isAuthenticated, userId } = useContext(AuthContext);
     const [songs, setSongs] = useState([]);
     const [displayedSongs, setDisplayedSongs] = useState([]);
-	const [selectedDatesInterval, setSelectedDatesInterval] = useState({});
+	
+	const [artists, setArtists] = useState('');
+	const [artistsData, setArtistsData] = useState();
+	const [genresData, setGenresData] = useState();
+	const [optionsArtists, setOptionsArtists] = useState();
+	const [optionsGenres, setOptionsGenres] = useState();
+    const [genres, setGenres] = useState('');
+
     const [user, setUser] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
@@ -101,10 +108,6 @@ const CancionesAdmin = () => {
 		return formattedDate;
 	};
 
-	
-
-	console.log('selected dates interval: ', selectedDatesInterval);
-
     const getUserData = async () => {
 		const response = await fetch("http://localhost:5000/users/" + userId);
 		const jsonData = await response.json();
@@ -128,10 +131,52 @@ const CancionesAdmin = () => {
         }
     };
 
+	// get all users function
+	const getArtists = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/artists/");
+            const jsonData = await response.json();
+
+            setArtistsData(jsonData);
+
+			let formattedOptionsArtists = jsonData.map(artist => ({
+				value: String(artist.id),
+				label: artist.name
+			}));
+
+			setOptionsArtists(formattedOptionsArtists);
+
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+	// get all users function
+	const getGenres = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/genres/");
+            const jsonData = await response.json();
+
+            setGenresData(jsonData);
+
+			let formattedOptionsGenres = jsonData.map(artist => ({
+				value: String(artist.id),
+				label: artist.name
+			}));
+
+			setOptionsGenres(formattedOptionsGenres);
+
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
     // when page loads, get user data
     useEffect(() => {
         getUserData();
 		getSongs();
+		getGenres();
+		getArtists();
     }, []);
 
     console.log('songs: ', songs);
@@ -173,6 +218,8 @@ const CancionesAdmin = () => {
 							setDisplayedSongs={setDisplayedSongs}
 							show={showAddSongModal}
 							onClose={handleAddSongModalClose}
+							optionsArtists={optionsArtists}
+							optionsGenres={optionsGenres}
 						/>
 						
 						<Paginate
@@ -193,6 +240,8 @@ const CancionesAdmin = () => {
 											setSongs={setSongs}
 											displayedSongs={displayedSongs}
 											setDisplayedSongs={setDisplayedSongs}
+											artists={artistsData}
+											genres={genresData}
 										/>
 										
 									</>

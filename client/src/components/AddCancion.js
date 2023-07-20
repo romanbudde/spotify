@@ -14,12 +14,14 @@ import Cookies from 'universal-cookie';
 import FechasHorarios from './FechasHorarios';
 import Select from 'react-select';
 
-const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplayedSongs} ) => {
+const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplayedSongs, optionsArtists, optionsGenres} ) => {
 	const { isAuthenticated } = useContext(AuthContext);
     const [name, setName] = useState('');
     const [artists, setArtists] = useState('');
 	const [artistsData, setArtistsData] = useState();
-	const [optionsArtists, setOptionsArtists] = useState();
+	const [genresData, setGenresData] = useState();
+	// const [optionsArtists, setOptionsArtists] = useState();
+	// const [optionsGenres, setOptionsGenres] = useState();
     const [genres, setGenres] = useState('');
     const [file, setFile] = useState('');
 	const [songUploadError, setSongUploadError] = useState(false);
@@ -35,10 +37,10 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 			.max(50, 'El nombre es demasiado largo!')
 			.required('Campo requerido!'),
 		artist: Yup.array()
-			.max(25, 'Demiados artistas!'),
+			.max(15, 'Demiados artistas!'),
 			// .required('Campo requerido!'),
 		genre: Yup.array()
-			.max(15, 'La dirección es demasiado larga'),
+			.max(15, 'Demasiados generos!'),
 			// .required('Campo requerido!'),
 	});
 
@@ -53,33 +55,15 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 		setFile(file)
 	}
 
-	// get all users function
-	const getArtists = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/artists/");
-            const jsonData = await response.json();
+	
 
-            setArtistsData(jsonData);
-
-			let formattedOptionsArtists = jsonData.map(artist => ({
-				value: String(artist.id),
-				label: artist.name
-			}));
-
-			setOptionsArtists(formattedOptionsArtists);
-
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
-	console.log('------- artists data: ', artistsData)
+	console.log('------- genres data: ', genresData)
 
 	// when page loads, get Songs
     useEffect(() => {
         // getSongs();
 		// getGenres();
-		getArtists();
+		// getArtists();
     }, []);
 
 	const closeEditDataMessage = () => {
@@ -148,9 +132,13 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 
             setSongs(newSong.id ? [...songs, newSong] : songs);
             setDisplayedSongs(newSong.id ? [...songs, newSong] : songs);
-			
+
 			if (newSong.id){
 				setEditDataMessageError(false);
+				setDisplayEditDataMessage(true);
+			}
+			else {
+				setEditDataMessageError(true);
 				setDisplayEditDataMessage(true);
 			}
 
@@ -246,13 +234,29 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
 											Generos
 										</label>
-										<Field name="genres" placeholder="ej: Rock" className={`${errors.genres && touched.genres ?  'bg-gray-50 border text-red-500 placeholder-red-500 text-sm focus:ring-red-500 focus:border-red-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-solid border-opacity-100 focus:outline-none focus:outline-0 border-red-500' : 
-										'bg-gray-50 border text-gray-900 text-sm focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 bg-transparent rounded-lg border-b border-gray-400 border-solid border-opacity-100 focus:outline-none focus:outline-0'}`}/>
-											{errors.genres && touched.genres ? (
-												<div className='text-red-500 font-normal w-full text-sm text-left'>
-													{errors.genres}
-												</div>
-											) : null}
+										<Select
+											// defaultValue={}
+											// onChange={ }
+											placeholder={'Generos'}
+											options={optionsGenres}
+											maxMenuHeight={240}
+											className='rounded-md w-full'
+											isMulti={true}
+											isSearchable={true}
+											onChange={(values) => {
+												setFieldValue('genres', values);
+												console.log(values);
+											}}
+											theme={(theme) => ({
+												...theme,
+												borderRadius: 10,
+												colors: {
+												...theme.colors,
+												primary25: '#8FD5FF',
+												primary: 'black',
+												},
+											})}
+										/>
 									</div>
 									<div className='flex flex-col py-2'>
 										<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">

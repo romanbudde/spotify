@@ -46,8 +46,8 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
         setDisplayEditDataMessage(false);
     }
 
-    const onSubmitSong = async (values) => {
-        console.log('----------------- onSubmitSong -------------- ');
+    const onSubmitArtist = async (values) => {
+        console.log('----------------- onSubmitArtist -------------- ');
 
 		const authToken = cookies.get('auth-token');
 		if(!authToken) {
@@ -59,7 +59,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newArtist = {};
-            const response = await fetch("http://localhost:5000/songs/", {
+            const response = await fetch("http://localhost:5000/artist/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -109,7 +109,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
 						// setFieldValue('address', address);
 						console.log('submit form!');
 						console.log(values);
-						onSubmitSong(values);
+						onSubmitArtist(values);
 					}}
 				>
 					{({ errors, touched, setFieldValue, setFieldError }) => (
@@ -142,7 +142,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
 										type="submit"
 										className="w-full text-white bg-gradient-to-r from-green-400 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-12"
 									>
-										Guardar cancion
+										Guardar artista
 									</button>
 								</div>
 							</div>
@@ -154,7 +154,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Error!</p>
-										<p className='text-white text-center font-medium'>No se ha podido crear la cancion.</p>
+										<p className='text-white text-center font-medium'>No se ha podido crear el artista.</p>
 										<FontAwesomeIcon icon={faCircleXmark} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-red-800 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'
@@ -173,7 +173,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Genial!</p>
-										<p className='text-white text-center font-medium'>Cancion creada con éxito</p>
+										<p className='text-white text-center font-medium'>Artista creado con éxito</p>
 										<FontAwesomeIcon icon={faCircleCheck} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-green-600 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'

@@ -313,7 +313,7 @@ app.get("/artists", async(req, res) => {
     }
 });
 
-// update individual - cuidador
+// update individual - artista
 app.put("/artist/:id", async(req, res) => {
     try {
         const { id } = req.params;
@@ -487,6 +487,16 @@ app.post('/songs', async(req, res) => {
         console.log(req.body);
         const { name, artists, genres, file } = req.body;
 
+        artists_ids = {
+            "ids": artists.map(artist => artist.value )
+        };
+        genres_ids = {
+            "ids": genres.map(genre => genre.value )
+        };
+
+        console.log('artists_ids: ', artists_ids);
+        console.log('genres_ids: ', genres_ids);
+
         console.log('---- current date ----');
         const created_at = new Date();
         console.log(created_at);
@@ -496,8 +506,8 @@ app.post('/songs', async(req, res) => {
         console.log('file: ', file);
 
         const newSong = await pool.query(
-            "INSERT INTO song (name, artists_ids, genres_ids, song_path) VALUES($1, $2, $3, $4) RETURNING *", 
-            [name, artists, genres, song_path]
+            "INSERT INTO song (name, artists_ids, genres_ids, song_path, enabled) VALUES($1, $2, $3, $4, $5) RETURNING *", 
+            [name, artists_ids, genres_ids, song_path, true]
         );
 
         // res.json(req.body);
@@ -556,6 +566,30 @@ app.post('/genre', async(req, res) => {
 
         const newSong = await pool.query(
             "INSERT INTO genre (name) VALUES($1) RETURNING *", 
+            [name]
+        );
+
+        // res.json(req.body);
+        res.json(newSong.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// create - una cancion
+app.post('/artist', async(req, res) => {
+    try {
+        console.log('---- backend post /artist ----');
+        console.log(req.body);
+        const { name } = req.body;
+
+        console.log('---- current date ----');
+        const created_at = new Date();
+        console.log(created_at);
+
+        const newSong = await pool.query(
+            "INSERT INTO artist (name) VALUES($1) RETURNING *", 
             [name]
         );
 
