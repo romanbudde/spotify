@@ -246,6 +246,7 @@ const UserLanding = () => {
 									onClick={() => {
 										setHomeSelected(true);
 										setDisplayHome(true);
+										setSearchSongsResult([]);
 										setSearchSelected(false);
 										setDisplaySearch(false);
 									}}
@@ -316,7 +317,15 @@ const UserLanding = () => {
 									<ul className='max-h-96 overflow-y-scroll'>
 										{ playlists && playlists.map (playlist => (
 											<li className='flex flex-row items-center justify-center hover:bg-gray-800 px-5'>
-												<p className='w-full p-3'>{playlist.name}</p>
+												<p
+													className='w-full p-3'
+													onClick={(e) => {
+														console.log('---- display playlist name: ', playlist.name)
+														console.log('---- display playlist id: ', playlist.id)
+													}}
+												>
+													{playlist.name}
+												</p>
 												{/* <FontAwesomeIcon icon={faCircleMinus} /> */}
 											</li>
 										))}
@@ -366,7 +375,7 @@ const UserLanding = () => {
 													/>
 													{activeSongPopup === song.id && songPopupOptions[song.id] && ( 
 														<div
-															className='bg-gray-600 absolute rounded-md right-3 -bottom-5 overflow-visible z-50 shadow-lg'
+															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-lg'
 														>
 															<p
 																className='text-white rounded-md hover:bg-gray-500 p-2'
@@ -380,20 +389,15 @@ const UserLanding = () => {
 															<div className='border border-gray-400'>
 															</div>
 
-
-															{ playlists && playlists.map (playlist => (
-																<p
-																	className='text-white rounded-md hover:bg-gray-500 p-2'
-																>
-																	{playlist.name}
-																</p>
-															))}
-
-															<p
-																className='text-white rounded-md hover:bg-gray-500 p-2'
-															>
-																Playlist 1
-															</p>
+															<ul className='max-h-40 overflow-y-scroll'>
+																{ playlists && playlists.map (playlist => (
+																	<p
+																		className='text-white rounded-md hover:bg-gray-500 p-2'
+																	>
+																		{playlist.name}
+																	</p>
+																))}
+															</ul>
 															<div>
 																
 															</div>
@@ -407,8 +411,8 @@ const UserLanding = () => {
 							</div>
 						)}
 						{displaySearch && (
-							<div className='space-y-1 my-2 justify-center w-full items-center'>
-								<div className='w-1/3 relative bg-gray-800 rounded-full flex flex-row items-center border border-transparent hover:border hover:border-gray-600'>
+							<div className='space-y-1 mb-2 rounded-lg justify-center w-full items-center bg-gray-900'>
+								<div className='w-1/3 relative m-3 bg-gray-800 rounded-full flex flex-row items-center border border-transparent hover:border hover:border-gray-600'>
 									<BsSearch className='absolute left-4 text-gray-300'></BsSearch>
 									<input
 										className='pl-11 bg-transparent w-full h-full p-5 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300'
@@ -459,7 +463,7 @@ const UserLanding = () => {
 													/>
 													{activeSongPopup === song.id && songPopupOptions[song.id] && ( 
 														<div
-															className='bg-gray-600 absolute rounded-md right-3 -bottom-5 overflow-visible z-50 shadow-lg'
+															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-lg'
 														>
 															<p
 																className='text-white rounded-md hover:bg-gray-500 p-2'
@@ -472,24 +476,15 @@ const UserLanding = () => {
 															</p>
 															<div className='border border-gray-400'>
 															</div>
-
-
-															{ playlists && playlists.map (playlist => (
-																<p
-																	className='text-white rounded-md hover:bg-gray-500 p-2'
-																>
-																	{playlist.name}
-																</p>
-															))}
-
-															<p
-																className='text-white rounded-md hover:bg-gray-500 p-2'
-															>
-																Playlist 1
-															</p>
-															<div>
-																
-															</div>
+															<ul className='max-h-40 overflow-y-scroll'>
+																{ playlists && playlists.map (playlist => (
+																	<p
+																		className='text-white rounded-md hover:bg-gray-500 p-2'
+																	>
+																		{playlist.name}
+																	</p>
+																))}
+															</ul>
 														</div>
 													)}
 												</div>
