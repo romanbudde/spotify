@@ -302,6 +302,22 @@ app.get("/songs", async(req, res) => {
     }
 });
 
+// get songs by name
+app.get("/songs-search", async(req, res) => {
+    try {
+        console.log('------------------------------- AT /songs-search GET ENDPOINT');
+        let { name } = req.query;
+
+        console.log('name: ', name)
+
+        const allSongs = await pool.query("SELECT * from song WHERE LOWER(name) LIKE '%' || LOWER($1) || '%'", [name])
+        res.json(allSongs.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
 // get all - artists
 app.get("/artists", async(req, res) => {
     try {
@@ -384,8 +400,11 @@ app.post('/playlist', async(req, res) => {
         console.log(req.body);
         const { song, playlist_name, user_id } = req.body;
 
-        let songs_ids = {
-            "ids": [song.id]
+        let songs_ids = {};
+        if(song){
+            songs_ids = {
+                "ids": [song.id]
+            }
         }
 
         let name;
@@ -396,7 +415,7 @@ app.post('/playlist', async(req, res) => {
             name = playlist_name;
         }
 
-        console.log('songs_ids: ', songs_ids)
+        // console.log('songs_ids: ', songs_ids)
 
         const newPlaylist = await pool.query(
             "INSERT INTO playlist (name, user_id, songs_ids) VALUES($1, $2, $3) RETURNING *", 
