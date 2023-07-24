@@ -408,7 +408,7 @@ const UserLanding = () => {
 	if(isAuthenticated){
 		return (
 			<Fragment>
-				<div className='relative h-screen bg-black text-white'>
+				<div className='relative min-h-screen bg-black text-white mb-28'>
 					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 bg-black'>
 						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
 					</div>
@@ -491,7 +491,7 @@ const UserLanding = () => {
 									)}
 								</div>
 								<div className='flex flex-col'>
-									<ul className='max-h-96 overflow-y-scroll'>
+									<ul className='max-h-screen overflow-y-scroll'>
 										{ playlists && playlists.map (playlist => (
 											playlist.enabled && (
 												<li className='flex flex-row items-center justify-center hover:bg-gray-800 cursor-pointer px-5'>
@@ -519,14 +519,16 @@ const UserLanding = () => {
 							</div>
 						</div>
 						{ displayHome && (
-							<div className='space-y-1 mb-2 rounded-lg w-full mx-auto flex flex-col justify-start items-center bg-gradient-to-b from-gray-700 to-gray-900'>
-								<p className='font-semibold mr-auto p-5 text-xl mb-7'>Descubre música</p>
+							<ul className='space-y-1 rounded-lg w-full flex flex-col justify-start items-start bg-gradient-to-b from-gray-700 to-gray-900 overflow-y-auto h-full mb-32'>
+								<p className='font-semibold p-5 text-xl mb-7'>Descubre música</p>
+								{/* <ul className='w-full overflow-y-scroll overflow-visible relative'> */}
 								{ songs.length > 0 && 
-									songs.map(song => (
+									songs.slice(0, 15).map(song => (
 										song.enabled && (
 											<Fragment key={song.id}>
-												<div
+												<li
 													className='flex flex-row gap-3 p-3 rounded-sm bg-transparent justify-left items-center w-full hover:bg-gray-600 cursor-pointer relative'
+													key={song.id}
 													onClick={() => {
 														setCurrentSong(song);
 														setIsPlaying(false);
@@ -560,7 +562,7 @@ const UserLanding = () => {
 													/>
 													{activeSongPopup === song.id && songPopupOptions[song.id] && ( 
 														<div
-															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-md'
+															className='bg-gray-800 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-md'
 														>
 															<p
 																className='text-white rounded-md hover:bg-gray-500 p-2'
@@ -574,7 +576,7 @@ const UserLanding = () => {
 															<div className='border border-gray-400'>
 															</div>
 
-															<ul className='max-h-40 overflow-y-scroll'>
+															<ul className='max-h-40 overflow-y-scroll overflow-visible'>
 																{ playlists && playlists.map (playlist => (
 																	<p
 																		className='text-white rounded-md hover:bg-gray-500 p-2'
@@ -589,15 +591,16 @@ const UserLanding = () => {
 															</div>
 														</div>
 													)}
-												</div>
+												</li>
 											</Fragment>
 										)
 									))
 								}
-							</div>
+								{/* </ul> */}
+							</ul>
 						)}
 						{displaySearch && (
-							<div className='space-y-1 mb-2 rounded-lg justify-center w-full items-center bg-gray-900'>
+							<div className='space-y-1 mb-32 rounded-lg justify-center w-full items-center bg-gray-900'>
 								<div className='w-1/3 relative m-3 bg-gray-800 rounded-full flex flex-row items-center border border-transparent hover:border hover:border-gray-600'>
 									<BsSearch className='absolute left-4 text-gray-300'></BsSearch>
 									<input
@@ -611,7 +614,7 @@ const UserLanding = () => {
 								</div>
 								<div className='p-5'>
 								{ searchSongsResult.length > 0 && 
-									searchSongsResult.map(song => (
+									searchSongsResult.slice(0, 20).map(song => (
 										song.enabled && (
 											<Fragment key={song.id}>
 												<div

@@ -29,6 +29,14 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 	// console.log('current song duration: ', numberToTime(currentSong.length));
 	// console.log('current song progress: ', numberToTime(currentSong.progress));
 
+	const nextSong = () => {
+		console.log('play next song in Songs');
+	}
+
+	const prevSong = () => {
+		console.log('play previous song in Songs');
+	}
+
 	const clickRef = useRef();
 
 	const checkWidth = (e) => {
@@ -90,21 +98,23 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 					</div>
 					<div className='controls flex flex-row gap-4 items-center justify-center text-white pt-3 pb-5'>
 						<BsFillSkipStartCircleFill 
-							className='btn_action text-5xl'
+							className='btn_action text-4xl cursor-pointer hover:opacity-70'
+							onClick={() => prevSong()}
 						/>
 						{ isPlaying ? (
 							<BsFillPauseCircleFill
-								className='btn_action text-6xl'
+								className='btn_action text-5xl hover:scale-105 cursor-pointer'
 								onClick={PlayPause}
 							/>
 						) : (
 							<BsFillPlayCircleFill
-								className='btn_action text-6xl'
+								className='btn_action text-5xl hover:scale-105'
 								onClick={PlayPause}
 							/>
 						)}
 						<BsFillSkipEndCircleFill
-							className='btn_action text-5xl'
+							className='btn_action text-4xl cursor-pointer hover:opacity-70'
+							onClick={() => nextSong()}
 						/>
 					</div>
 				</div>
