@@ -268,12 +268,12 @@ const UserLanding = () => {
 				const response = await fetch(`http://localhost:5000/songs-search?name=${name}`);
 				const jsonData = await response.json();
 	
-				setSearchSongsResult(jsonData);
+				setSongs(jsonData);
 				console.log('searching songs response: ', jsonData)
 				// setDisplayedSedes(jsonData);
 			}
 			else {
-				setSearchSongsResult([]);
+				setSongs([]);
 			}
         } catch (error) {
             console.error(error.message);
@@ -302,7 +302,7 @@ const UserLanding = () => {
                     }
                 });
 
-            setPlaylistSongs(jsonData);
+            setSongs(jsonData);
             // setDisplayedSedes(jsonData);
         } catch (error) {
             console.error(error.message);
@@ -418,6 +418,7 @@ const UserLanding = () => {
 								<div
 									className='flex flex-row gap-3 items-center justify-left text-gray-300 hover:text-white'
 									onClick={() => {
+										getSongs();
 										setHomeSelected(true);
 										setDisplayHome(true);
 										setSearchSongsResult([]);
@@ -437,6 +438,7 @@ const UserLanding = () => {
 								<div
 									className='flex flex-row gap-3 items-center justify-left text-gray-300 hover:text-white'
 									onClick={() => {
+										setSongs([]);
 										setHomeSelected(false);
 										setDisplayHome(false);
 										setSearchSelected(true);
@@ -613,8 +615,8 @@ const UserLanding = () => {
 									/>
 								</div>
 								<div className='p-5'>
-								{ searchSongsResult.length > 0 && 
-									searchSongsResult.slice(0, 20).map(song => (
+								{ songs.length > 0 && 
+									songs.slice(0, 20).map(song => (
 										song.enabled && (
 											<Fragment key={song.id}>
 												<div
@@ -802,9 +804,9 @@ const UserLanding = () => {
 										</div>
 									)}
 								</div>
-								<p className='font-medium text-white opacity-70 mr-auto pl-5 text-md pb-10'>{playlistSongs.length ? playlistSongs.length : '0'} canciones</p>
-								{ playlistSongs.length > 0 && 
-									playlistSongs.map(song => (
+								<p className='font-medium text-white opacity-70 mr-auto pl-5 text-md pb-10'>{songs.length ? songs.length : '0'} canciones</p>
+								{ songs.length > 0 && 
+									songs.map(song => (
 										song.enabled && (
 											<Fragment key={song.id}>
 												<div

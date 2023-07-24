@@ -24,17 +24,58 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 		return '00:00';
 	};
 
-	// console.log('audioElem: ', audioElem);
-	// console.log('current song: ', currentSong);
+	console.log('songs: ', songs);
+	console.log('current song: ', currentSong);
 	// console.log('current song duration: ', numberToTime(currentSong.length));
 	// console.log('current song progress: ', numberToTime(currentSong.progress));
 
 	const nextSong = () => {
 		console.log('play next song in Songs');
+		const index = songs.findIndex(song => song.id === currentSong.id);
+
+		// Find the index of the next enabled song
+		let nextEnabledIndex = index + 1;
+		while (nextEnabledIndex < songs.length && !songs[nextEnabledIndex].enabled) {
+		  nextEnabledIndex++;
+		}
+	  
+		// If no enabled song is found, wrap around to the beginning
+		if (nextEnabledIndex >= songs.length) {
+		  nextEnabledIndex = 0;
+		  while (nextEnabledIndex < index && !songs[nextEnabledIndex].enabled) {
+			nextEnabledIndex++;
+		  }
+		}
+	  
+		// Set the next enabled song as the current song
+		setCurrentSong(songs[nextEnabledIndex]);
+
+		setIsPlaying(false);
+		audioElem.current.currentTime = 0;
 	}
 
 	const prevSong = () => {
-		console.log('play previous song in Songs');
+		const index = songs.findIndex(song => song.id === currentSong.id);
+
+		// Find the index of the previous enabled song
+		let previousEnabledIndex = index - 1;
+		while (previousEnabledIndex >= 0 && !songs[previousEnabledIndex].enabled) {
+		  previousEnabledIndex--;
+		}
+	  
+		// If no enabled song is found, go back to the end of the list
+		if (previousEnabledIndex < 0) {
+		  previousEnabledIndex = songs.length - 1;
+		  while (previousEnabledIndex >= 0 && !songs[previousEnabledIndex].enabled) {
+			previousEnabledIndex--;
+		  }
+		}
+	  
+		// Set the previous enabled song as the current song
+		setCurrentSong(songs[previousEnabledIndex]);
+
+		setIsPlaying(false);
+		audioElem.current.currentTime = 0;
 	}
 
 	const clickRef = useRef();
