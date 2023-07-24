@@ -411,13 +411,12 @@ COPY public.genre (id, name) FROM stdin;
 --
 
 COPY public.playlist (id, user_id, name, songs_ids, enabled) FROM stdin;
-1	50	Yukon	{"ids":[11]}	t
-3	50	Teris	{"ids":[10]}	t
-4	50	Yukon	{"ids":[11]}	t
 5	50	newww	{}	f
 12	50	adwdawsd	{}	t
-13	50	new playlist	{}	t
 2	50	wqrads	{"ids":[11, 12 ,23]}	t
+3	50	Teris	{"ids":[10,20,12]}	t
+1	50	Yukon	{"ids":[11,20,12,23]}	t
+13	50	new playlist	{"ids":[23]}	t
 \.
 
 
@@ -468,6 +467,11 @@ COPY public.song (id, artists_ids, name, genres_ids, song_path, enabled) FROM st
 12	{"ids": ["1", "2"]}	This Way	{"ids":["1","3","4"]}	songs/Matt Guy - This Way.mp3	t
 23	{"ids":["5"]}	Candy Shop Remix	{"ids":["2","4"]}	songs/CryJaxx - Candy Shop (feat. Junior Charles).mp3	t
 21	{"ids":["3","1"]}	awdasd	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	f
+25	{"ids":["3","1"]}	Yukon	{"ids":["1","3","4"]}	songs/Uddhav - Yukon (Original Mix).mp3	t
+26	{"ids":["3","1"]}	Teris	{"ids":["1","3","4"]}	songs/Habischman - Teris.mp3	t
+27	{"ids": ["1", "2"]}	This Way	{"ids":["1","3","4"]}	songs/Matt Guy - This Way.mp3	t
+28	{"ids":["5"]}	Candy Shop Remix	{"ids":["2","4"]}	songs/CryJaxx - Candy Shop (feat. Junior Charles).mp3	t
+29	{"ids":["3","1"]}	awdasd	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	f
 \.
 
 
@@ -532,7 +536,7 @@ SELECT pg_catalog.setval('public.genre_id_seq', 4, true);
 -- Name: id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.id', 24, true);
+SELECT pg_catalog.setval('public.id', 29, true);
 
 
 --

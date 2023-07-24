@@ -50,7 +50,7 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 	if(isAuthenticated){
 		return (
 			<Fragment>
-				<div className='flex flex-col justify-center items-center bg-black fixed bottom-0 w-full z-50'>
+				<div className='flex flex-col justify-center items-center bg-black fixed bottom-0 w-full z-40'>
 					<div className='player_container'>
 						<div className='title'>
 							<p className='text-white font-medium text-lg my-2'>

@@ -51,6 +51,60 @@ const UserLanding = () => {
 	// console.log('artists: ', artists);
 	// console.log('genres: ', genres);
 
+	const addSongToPlaylist = async (id, playlist) => {
+		console.log('----------------- Add song to playlist -------------- ');
+
+		console.log('song id to add: ', id);
+		console.log('playlist to add to: ', playlist);
+		
+		let songs_ids;
+
+		if(playlist.songs_ids && playlist.songs_ids.ids && playlist.songs_ids.ids.length > 0 ) {
+			playlist.songs_ids.ids.push(id);
+		}
+		else{
+			playlist.songs_ids.ids = [id];
+		}
+		
+		console.log('playlist.songs_ids.ids after push: ', playlist.songs_ids.ids);
+		
+        try {
+            const body = { id: playlist.id, songs_ids: playlist.songs_ids.ids };
+            console.log(JSON.stringify(body));
+            console.log('---- end of body to be submitted ----');
+            let updatedPlaylist = {};
+            const response = await fetch("http://localhost:5000/playlist-add-song", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())	
+                .then(result => {
+                    if(result){
+                        console.log('playlist add song result: ');
+                        console.log(result);
+                        updatedPlaylist = result;
+                    }
+                });
+
+            // console.log(response.json();
+
+            // setPlaylists(playlists.map((playlist) => playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist));
+			// setSelectedPlaylist({
+			// 	...selectedPlaylist, 
+			// 	name: updatedPlaylist.name
+			// });
+
+            // window.location = '/';
+        }
+        catch (error) {
+            console.error(error.message);
+        }
+	}
+	
+
 	const deletePlaylist = async () => {
 		console.log('----------------- delete playlist -------------- ');
 
@@ -255,7 +309,7 @@ const UserLanding = () => {
         }
     };
 
-	console.log('playlist songs: ', playlistSongs)
+	// console.log('playlist songs: ', playlistSongs)
 
 	// get all songs
 	const getSongs = async () => {
@@ -354,7 +408,7 @@ const UserLanding = () => {
 	if(isAuthenticated){
 		return (
 			<Fragment>
-				<div className='relative h bg-black text-white'>
+				<div className='relative h-screen bg-black text-white'>
 					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 bg-black'>
 						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
 					</div>
@@ -506,7 +560,7 @@ const UserLanding = () => {
 													/>
 													{activeSongPopup === song.id && songPopupOptions[song.id] && ( 
 														<div
-															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-lg'
+															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-md'
 														>
 															<p
 																className='text-white rounded-md hover:bg-gray-500 p-2'
@@ -524,6 +578,7 @@ const UserLanding = () => {
 																{ playlists && playlists.map (playlist => (
 																	<p
 																		className='text-white rounded-md hover:bg-gray-500 p-2'
+																		onClick={() => addSongToPlaylist(song.id, playlist)}
 																	>
 																		{playlist.name}
 																	</p>

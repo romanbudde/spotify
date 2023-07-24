@@ -514,6 +514,34 @@ app.put('/playlist', async(req, res) => {
     }
 });
 
+// update playlist name
+app.put('/playlist-add-song', async(req, res) => {
+    try {
+        console.log('---- backend post /playlist ----');
+        console.log(req.body);
+        const { id, songs_ids } = req.body;
+
+		let songs_ids_formatted = {
+			"ids": songs_ids
+		}
+
+		console.log('songs ids formatted: ', songs_ids_formatted)
+
+        const updatedPlaylist = await pool.query(
+            "UPDATE playlist SET songs_ids = $1 WHERE id = $2 RETURNING *", 
+            [songs_ids_formatted, id]
+        );
+
+		console.log('updated Playlist: ', updatedPlaylist.rows[0])
+
+        // res.json(req.body);
+        res.json(updatedPlaylist.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
 // get a reservation by user id or sede_id
 app.post("/reservas", async(req, res) => {
     try {
