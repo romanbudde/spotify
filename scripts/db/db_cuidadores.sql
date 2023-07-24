@@ -113,7 +113,8 @@ CREATE TABLE public.playlist (
     id integer NOT NULL,
     user_id integer NOT NULL,
     name character varying NOT NULL,
-    songs_ids json
+    songs_ids json,
+    enabled boolean
 );
 
 
@@ -409,10 +410,14 @@ COPY public.genre (id, name) FROM stdin;
 -- Data for Name: playlist; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.playlist (id, user_id, name, songs_ids) FROM stdin;
-1	50	Yukon	{"ids":[11]}
-2	50	This Way	{"ids":[12]}
-3	50	Teris	{"ids":[10]}
+COPY public.playlist (id, user_id, name, songs_ids, enabled) FROM stdin;
+1	50	Yukon	{"ids":[11]}	t
+3	50	Teris	{"ids":[10]}	t
+4	50	Yukon	{"ids":[11]}	t
+5	50	newww	{}	f
+12	50	adwdawsd	{}	t
+13	50	new playlist	{}	t
+2	50	wqrads	{"ids":[11, 12 ,23]}	t
 \.
 
 
@@ -457,12 +462,12 @@ COPY public.sede_reservations (id, user_id, sede_id, horario, date) FROM stdin;
 --
 
 COPY public.song (id, artists_ids, name, genres_ids, song_path, enabled) FROM stdin;
-21	{"ids":["3","1"]}	awdasd	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	\N
 20	{"ids":["3","1"]}\r\n	Testing	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	t
 11	{"ids":["3","1"]}	Yukon	{"ids":["1","3","4"]}	songs/Uddhav - Yukon (Original Mix).mp3	t
 10	{"ids":["3","1"]}	Teris	{"ids":["1","3","4"]}	songs/Habischman - Teris.mp3	t
 12	{"ids": ["1", "2"]}	This Way	{"ids":["1","3","4"]}	songs/Matt Guy - This Way.mp3	t
 23	{"ids":["5"]}	Candy Shop Remix	{"ids":["2","4"]}	songs/CryJaxx - Candy Shop (feat. Junior Charles).mp3	t
+21	{"ids":["3","1"]}	awdasd	{"ids":["1","3","4"]}	songs/The Killer Golden Jazz Alpaca.mp3	f
 \.
 
 
@@ -534,7 +539,7 @@ SELECT pg_catalog.setval('public.id', 24, true);
 -- Name: playlist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.playlist_id_seq', 3, true);
+SELECT pg_catalog.setval('public.playlist_id_seq', 13, true);
 
 
 --

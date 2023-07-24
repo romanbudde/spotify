@@ -16,6 +16,8 @@ import Player from './Player';
 const UserLanding = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 	const [searchSongsResult, setSearchSongsResult] = useState([]);
+	const [playlistSongs, setPlaylistSongs] = useState([]);
+	const [selectedPlaylist, setSelectedPlaylist] = useState();
 	const [songs, setSongs] = useState([]);
 	const [genres, setGenres] = useState([]);
 	const [artists, setArtists] = useState([]);
@@ -30,6 +32,11 @@ const UserLanding = () => {
     const [newPlaylistName, setNewPlaylistName] = useState();
     const [displayHome, setDisplayHome] = useState(true);
     const [displaySearch, setDisplaySearch] = useState(false);
+    const [displayPlaylistPage, setDisplayPlaylistPage] = useState(false);
+    const [playlistOptionsPopup, setPlaylistOptionsPopup] = useState(false);
+    const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
+    const [playlistEditNameModal, setPlaylistEditNameModal] = useState(false);
+    const [editedPlaylistName, setEditedPlaylistName] = useState(false);
 
 	// console.log('songPopupOptions: ', songPopupOptions)
 	const { userId } = useContext(AuthContext);
@@ -43,6 +50,88 @@ const UserLanding = () => {
 	// console.log('songs: ', songs);
 	// console.log('artists: ', artists);
 	// console.log('genres: ', genres);
+
+	const deletePlaylist = async () => {
+		console.log('----------------- delete playlist -------------- ');
+
+		console.log('selectedPlaylist: ', selectedPlaylist);
+		
+        try {
+            const body = { playlist: selectedPlaylist };
+            console.log(JSON.stringify(body));
+            console.log('---- end of body to be submitted ----');
+            let newPlaylist = {};
+            const response = await fetch(`http://localhost:5000/playlist?id=${selectedPlaylist.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(result => {
+					console.log(result);
+                    if(result.id){
+                        console.log('playlist creation result: ');
+                        console.log(result);
+                        newPlaylist = result;
+						setPlaylists(playlists.map((playlist) => playlist.id === result.id ? { ...playlist, enabled: false } : playlist));
+						setPlaylistDeleteModal(false);
+						setDisplayPlaylistPage(false);
+						setDisplayHome(true);
+                    }
+                });
+
+            // console.log(response.json();
+
+			
+
+            // window.location = '/';
+        }
+        catch (error) {
+            console.error(error.message);
+        }
+	}
+
+	const savePlaylistName = async () => {
+		console.log('----------------- Edit playlist name -------------- ');
+
+		console.log('selectedPlaylist: ', selectedPlaylist);
+		
+        try {
+            const body = { playlist: selectedPlaylist, new_name: editedPlaylistName };
+            console.log(JSON.stringify(body));
+            console.log('---- end of body to be submitted ----');
+            let updatedPlaylist = {};
+            const response = await fetch("http://localhost:5000/playlist", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if(result.id){
+                        console.log('playlist creation result: ');
+                        console.log(result);
+                        updatedPlaylist = result;
+                    }
+                });
+
+            // console.log(response.json();
+
+            setPlaylists(playlists.map((playlist) => playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist));
+			setSelectedPlaylist({
+				...selectedPlaylist, 
+				name: updatedPlaylist.name
+			});
+
+            // window.location = '/';
+        }
+        catch (error) {
+            console.error(error.message);
+        }
+	}
 
 	const createPlaylist = async (song) => {
 		console.log('----------------- onSubmitSong -------------- ');
@@ -137,7 +226,38 @@ const UserLanding = () => {
         }
 	}
 
-	// get all users function
+	// get playlist's songs
+	const getPlaylistSongs = async (songs_ids) => {
+        try {
+			let jsonData;
+			const body = { songs_ids };
+			console.log('getPlaylistSongs, ids to get: ', songs_ids);
+			const response = await fetch("http://localhost:5000/playlist-songs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if(result){
+                        console.log('playlist songs result: ');
+                        console.log(result);
+                        jsonData = result;
+                    }
+                });
+
+            setPlaylistSongs(jsonData);
+            // setDisplayedSedes(jsonData);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+	console.log('playlist songs: ', playlistSongs)
+
+	// get all songs
 	const getSongs = async () => {
         try {
             const response = await fetch("http://localhost:5000/songs/");
@@ -150,7 +270,7 @@ const UserLanding = () => {
         }
     };
 
-	// get all users function
+	// get all genres
 	const getGenres = async () => {
         try {
             const response = await fetch("http://localhost:5000/genres/");
@@ -162,7 +282,7 @@ const UserLanding = () => {
         }
     };
 
-	// get all users function
+	// get all artists
 	const getArtists = async () => {
         try {
             const response = await fetch("http://localhost:5000/artists/");
@@ -174,7 +294,7 @@ const UserLanding = () => {
         }
     };
 
-	// get all users function
+	// get all playlists for logged in user
 	const getPlaylists = async () => {
         try {
 		const response = await fetch(`http://localhost:5000/playlists?user_id=${userId}`);
@@ -249,6 +369,7 @@ const UserLanding = () => {
 										setSearchSongsResult([]);
 										setSearchSelected(false);
 										setDisplaySearch(false);
+										setDisplayPlaylistPage(false);
 									}}
 								>
 									{homeSelected ? (
@@ -266,6 +387,7 @@ const UserLanding = () => {
 										setDisplayHome(false);
 										setSearchSelected(true);
 										setDisplaySearch(true);
+										setDisplayPlaylistPage(false);
 									}}
 								>
 									{searchSelected ? (
@@ -287,54 +409,63 @@ const UserLanding = () => {
 										}}
 									/>
 									{displayNewPlaylistModal && (
-											<div class="absolute -bottom-14 right-0 bg-gray-800 rounded-sm shadow-md">
-												<input
-													type="text"
-													id="floating_outlined"
-													class="block pl-2.5 pr-14 pb-2.5 pt-4 w-full text-sm text-gray-300 bg-transparent rounded-sm border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-green-500 peer"
-													placeholder=" " 
-													onChange={(e) => {
-														console.log('new playlist name: ', e.target.value)
-														setNewPlaylistName(e.target.value)
-													}}
-												/>
-												<label for="floating_outlined" class="absolute text-sm text-gray-200 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] px-2 peer-focus:px-2 peer-focus:text-gray-200 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 flex flex-row justify-between w-full">
-													Nombre de la playlist
-												</label>
-												<p
-													className='absolute right-2 top-3 text-white z-50 cursor-pointer font-medium hover:text-gray-500'
-													onClick={() => {
-														console.log('---- playlist creation, name is: ', newPlaylistName);
-														createEmptyPlaylist();
-													}}
-												>
-													Crear
-												</p>
-											</div>
+										<div class="absolute -bottom-14 right-0 bg-gray-800 rounded-sm shadow-md">
+											<input
+												type="text"
+												id="floating_outlined"
+												class="block pl-2.5 pr-14 pb-2.5 pt-4 w-full text-sm text-gray-300 bg-transparent rounded-sm border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-green-500 peer"
+												placeholder=" " 
+												onChange={(e) => {
+													console.log('new playlist name: ', e.target.value)
+													setNewPlaylistName(e.target.value)
+												}}
+											/>
+											<label for="floating_outlined" class="absolute text-sm text-gray-200 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] px-2 peer-focus:px-2 peer-focus:text-gray-200 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 flex flex-row justify-between w-full">
+												Nombre de la playlist
+											</label>
+											<p
+												className='absolute right-2 top-3 text-white z-50 cursor-pointer font-medium hover:text-gray-500'
+												onClick={() => {
+													console.log('---- playlist creation, name is: ', newPlaylistName);
+													createEmptyPlaylist();
+													setDisplayNewPlaylistModal(false);
+												}}
+											>
+												Crear
+											</p>
+										</div>
 									)}
 								</div>
 								<div className='flex flex-col'>
 									<ul className='max-h-96 overflow-y-scroll'>
 										{ playlists && playlists.map (playlist => (
-											<li className='flex flex-row items-center justify-center hover:bg-gray-800 px-5'>
-												<p
-													className='w-full p-3'
-													onClick={(e) => {
-														console.log('---- display playlist name: ', playlist.name)
-														console.log('---- display playlist id: ', playlist.id)
-													}}
-												>
-													{playlist.name}
-												</p>
-												{/* <FontAwesomeIcon icon={faCircleMinus} /> */}
-											</li>
+											playlist.enabled && (
+												<li className='flex flex-row items-center justify-center hover:bg-gray-800 cursor-pointer px-5'>
+													<p
+														className='w-full p-3'
+														onClick={(e) => {
+															console.log('---- display playlist name: ', playlist.name);
+															console.log('---- display playlist id: ', playlist.id);
+															console.log('---- display playlist songs_ids: ', playlist.songs_ids.ids);
+															getPlaylistSongs(playlist.songs_ids.ids);
+															setSelectedPlaylist(playlist);
+															setDisplayPlaylistPage(true);
+															setDisplayHome(false);
+															setDisplaySearch(false);
+														}}
+													>
+														{playlist.name}
+													</p>
+													{/* <FontAwesomeIcon icon={faCircleMinus} /> */}
+												</li>
+											)
 										))}
 									</ul>
 								</div>
 							</div>
 						</div>
 						{ displayHome && (
-							<div className='space-y-1 mb-2 rounded-lg w-full mx-auto flex flex-col justify-start items-center bg-gradient-to-b from-gray-700 to-grey-900'>
+							<div className='space-y-1 mb-2 rounded-lg w-full mx-auto flex flex-col justify-start items-center bg-gradient-to-b from-gray-700 to-gray-900'>
 								<p className='font-semibold mr-auto p-5 text-xl mb-7'>Descubre música</p>
 								{ songs.length > 0 && 
 									songs.map(song => (
@@ -493,6 +624,199 @@ const UserLanding = () => {
 									))
 								}
 								</div>
+							</div>
+						)}
+						{displayPlaylistPage && (
+							<div className='space-y-1 mb-2 rounded-lg justify-center w-full items-center bg-gradient-to-b from-gray-700 to-gray-900'>
+								<p className='font-normal mr-auto pl-6 pt-5 text-sm'>Playlist</p>
+								<div className='flex flex-row items-center justify-start p-5 mb-1 relative'>
+									<p className='font-semibold text-5xl'>{selectedPlaylist.name}</p>
+									<div className='relative'>
+										<BsThreeDots
+											className='text-4xl text-gray-300 right-3 ml-7 cursor-pointer hover:text-white'
+											onClick={() => {
+												setPlaylistOptionsPopup(!playlistOptionsPopup);
+											}}
+										/>
+										{playlistOptionsPopup && (
+											<div
+												className='absolute bg-gray-600 rounded-md top-8 left-7 overflow-visible z-50 shadow-lg'
+											>
+												<p
+													className='text-white rounded-md hover:bg-gray-500 p-2 whitespace-nowrap'
+													onClick={() => {
+														console.log('----------- edit playlist: ', selectedPlaylist);
+														setPlaylistEditNameModal(true);
+													}}
+												>
+													Editar nombre
+												</p>
+												<p
+													className='text-white rounded-md hover:bg-gray-500 p-2 whitespace-nowrap'
+													onClick={() => {
+														console.log('----------- eliminar playlist: ', selectedPlaylist);
+														setPlaylistDeleteModal(true);
+													}}
+												>
+													Eliminar playlist
+												</p>
+											</div>
+										)}
+									</div>
+									{playlistDeleteModal && (
+										<div className='fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex justify-center items-center'>
+											<div className='bg-gray-100 text-black p-5 relative rounded-lg'>
+												<button onClick={ () => setPlaylistDeleteModal(false) } type="button" className="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-300 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="defaultModal">
+													<svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path></svg>
+													<span className="sr-only">Close modal</span>
+												</button>
+												<p className='mt-5 text-lg font-semibold'>¿Eliminar playlist de tu librería?</p>
+												<p className='mt-5 text-sm'>Esto eliminará a <b>{selectedPlaylist.name}</b> de tu librería.</p>
+												<div className='mt-10 flex flex-row w-full gap-12 justify-center items-center font-medium'>
+													<button
+														className='hover:scale-110'
+														type='button'
+														onClick={() => {
+															setPlaylistDeleteModal(false)
+														}}
+													>
+														Cancelar
+													</button>
+													<button
+														className='bg-green-400 py-3 px-7 rounded-full hover:scale-105'
+														type='button'
+														onClick={() => {
+															deletePlaylist();
+														}}
+													>
+														Eliminar
+													</button>
+												</div>
+											</div>
+										</div>
+									)}
+									{playlistEditNameModal && (
+										<div className='fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex justify-center items-center'>
+											<div className='bg-gray-800 text-white p-5 relative rounded-lg'>
+												<button onClick={ () => setPlaylistEditNameModal(false) } type="button" className="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-300 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="defaultModal">
+													<svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path></svg>
+													<span className="sr-only">Close modal</span>
+												</button>
+												<p className='mt-5 text-lg font-semibold'>Editar nombre</p>
+
+												<div class="relative mt-5 bg-gray-800 rounded-sm shadow-md">
+													<input
+														type="text"
+														id="playlist_name_edited"
+														className="block pl-2.5 pr-14 pb-2.5 pt-4 w-full text-sm text-gray-300 bg-transparent rounded-sm border-1 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-green-500 peer"
+														placeholder=" " 
+														onChange={(e) => {
+															console.log('edited playlist name: ', e.target.value)
+															setEditedPlaylistName(e.target.value)
+														}}
+													/>
+													<label for="playlist_name_edited" class="absolute text-sm text-gray-200 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] px-2 peer-focus:px-2 peer-focus:text-gray-200 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 flex flex-row justify-between w-full">
+														Nombre de la playlist
+													</label>
+												</div>
+
+												<div className='mt-7 flex flex-row w-full gap-12 justify-center items-center font-medium'>
+													<button
+														className='hover:scale-110'
+														type='button'
+														onClick={() => {
+															setPlaylistEditNameModal(false)
+														}}
+													>
+														Cancelar
+													</button>
+													<button
+														className='bg-green-400 py-3 px-7 rounded-full hover:scale-105'
+														type='button'
+														onClick={() => {
+															savePlaylistName();
+														}}
+													>
+														Guardar
+													</button>
+												</div>
+											</div>
+										</div>
+									)}
+								</div>
+								<p className='font-medium text-white opacity-70 mr-auto pl-5 text-md pb-10'>{playlistSongs.length ? playlistSongs.length : '0'} canciones</p>
+								{ playlistSongs.length > 0 && 
+									playlistSongs.map(song => (
+										song.enabled && (
+											<Fragment key={song.id}>
+												<div
+													className='flex flex-row gap-3 p-3 rounded-sm bg-transparent justify-left items-center w-full hover:bg-gray-600 cursor-pointer relative'
+													onClick={() => {
+														setCurrentSong(song);
+														setIsPlaying(false);
+														audioElem.current.currentTime = 0;
+													}}
+												>
+													<BsFillPlayCircleFill className='text-2xl'/>
+													<div className='flex flex-col'>
+														<p className=''>{song.name}</p>
+														<div className='flex flex-row gap-2'>
+															{artists.map(artist => (
+																song.artists_ids.ids.map(song_artist_id => (
+																	parseInt(song_artist_id) === artist.id ? (
+																		<p className='text-gray-400 text-sm bg-black p-0.5 rounded-sm opacity-90'>{artist.name}</p>
+																	) : (
+																		<></>
+																	)
+																))
+															))}
+														</div>
+													</div>
+													<BsThreeDots
+														className='absolute text-2xl text-gray-300 right-3'
+														onClick={() => {
+															setActiveSongPopup(song.id);
+															setSongPopupOptions((prevOptions) => ({
+																...prevOptions,
+																[song.id]: !prevOptions[song.id]
+															}))
+														}}
+													/>
+													{activeSongPopup === song.id && songPopupOptions[song.id] && ( 
+														<div
+															className='bg-gray-600 absolute rounded-md right-10 -bottom-5 overflow-visible z-50 shadow-lg'
+														>
+															<p
+																className='text-white rounded-md hover:bg-gray-500 p-2'
+																onClick={() => {
+																	console.log('----------- crear playlist, song name: ', song.name);
+																	createPlaylist(song);
+																}}
+															>
+																Crear playlist
+															</p>
+															<div className='border border-gray-400'>
+															</div>
+
+															<ul className='max-h-40 overflow-y-scroll'>
+																{ playlists && playlists.map (playlist => (
+																	<p
+																		className='text-white rounded-md hover:bg-gray-500 p-2'
+																	>
+																		{playlist.name}
+																	</p>
+																))}
+															</ul>
+															<div>
+																
+															</div>
+														</div>
+													)}
+												</div>
+											</Fragment>
+										)
+									))
+								}
 							</div>
 						)}
 					</div>

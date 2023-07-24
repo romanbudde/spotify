@@ -369,6 +369,41 @@ app.get("/users/:id", async(req, res) => {
     }
 });
 
+// get playlist's songs
+app.post("/playlist-songs", async(req, res) => {
+    try {
+        const { songs_ids } = req.body;
+
+        console.log('songs_ids es: ', songs_ids);
+        
+        let parsed_songs_ids;
+        if(songs_ids){
+            parsed_songs_ids = songs_ids.map(id => parseInt(id));
+            console.log('parsed_songs_ids es: ', parsed_songs_ids)
+            
+            let songs;
+    
+            songs = await pool.query(
+                "SELECT * from song WHERE id = ANY($1)",
+                [parsed_songs_ids]
+            );
+    
+            if(!parsed_songs_ids) {
+                return res.status(400).json({"message": "Error: songs_ids no fue especificado."});
+            }
+    
+            console.log('songs: ', songs.rows);
+            res.json(songs.rows);
+        }
+        else {
+            res.json({})
+        }
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
 // get playlists by user id
 app.get("/playlists", async(req, res) => {
     try {
@@ -387,6 +422,28 @@ app.get("/playlists", async(req, res) => {
 
         console.log('playlists: ', playlists.rows);
         res.json(playlists.rows);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// delete playlist
+app.delete("/playlist", async(req, res) => {
+    try {
+        const { id } = req.query;
+
+        deleted_playlist = await pool.query(
+            "UPDATE playlist SET enabled = false WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if(!id) {
+            res.status(400).json({"message": "Error: id (de la playlist) no fue especificado."});
+        }
+
+        console.log('playlist deleted: ', deleted_playlist.rows);
+        res.json(deleted_playlist.rows[0]);
     }
     catch (error) {
         console.error(error.message);
@@ -418,12 +475,39 @@ app.post('/playlist', async(req, res) => {
         // console.log('songs_ids: ', songs_ids)
 
         const newPlaylist = await pool.query(
-            "INSERT INTO playlist (name, user_id, songs_ids) VALUES($1, $2, $3) RETURNING *", 
+            "INSERT INTO playlist (name, user_id, songs_ids, enabled) VALUES($1, $2, $3, true) RETURNING *", 
             [name, user_id, songs_ids]
         );
 
         // res.json(req.body);
         res.json(newPlaylist.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+// update playlist name
+app.put('/playlist', async(req, res) => {
+    try {
+        console.log('---- backend post /playlist ----');
+        console.log(req.body);
+        const { playlist, new_name } = req.body;
+        let name;
+        if(new_name){
+            name = new_name;
+        }
+        else {
+            name = playlist.name;
+        }
+
+        const updatedPlaylist = await pool.query(
+            "UPDATE playlist SET name = $1 WHERE id = $2 RETURNING *", 
+            [name, playlist.id]
+        );
+
+        // res.json(req.body);
+        res.json(updatedPlaylist.rows[0]);
     }
     catch (error) {
         console.error(error.message);
