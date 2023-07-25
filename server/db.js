@@ -14,7 +14,8 @@ const pool = new Pool({
     password: "B5qPiSbzg459W1yZAIZBG63dpI0uBpHj",
     host: "dpg-civk1aunqql48o6k1at0-a.oregon-postgres.render.com",
     port: "5432",
-    database: "db_cuidadores"
+    database: "db_cuidadores",
+    ssl: true
 });
 
 module.exports = pool;
