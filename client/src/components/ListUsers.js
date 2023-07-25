@@ -36,7 +36,7 @@ const ListUsers = () => {
     const disableUser = async (id) => {
         try {
             let disabledUser = {};
-            const disableUser = await fetch(`http://localhost:5000/cuidadores/${id}`, {
+            const disableUser = await fetch(`http://localhost:5000/cuidusersadores/${id}`, {
                 method: "DELETE"
             })
                 .then(response => response.json());
@@ -65,7 +65,7 @@ const ListUsers = () => {
                 enabled: true 
             };
             const enabledUser = await fetch(
-                `http://localhost:5000/cuidadores/${id}`,
+                `http://localhost:5000/users/${id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -91,7 +91,7 @@ const ListUsers = () => {
     // get all users function
     const getUsers = async () => {
         try {
-            const response = await fetch("http://localhost:5000/cuidadores/");
+            const response = await fetch("http://localhost:5000/users/");
             const jsonData = await response.json();
 
             setUsers(jsonData);

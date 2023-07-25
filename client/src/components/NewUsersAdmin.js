@@ -97,16 +97,17 @@ const NewUsersAdmin = () => {
     const disableUser = async (id) => {
         try {
             let disabledUser = {};
-            const disableUser = await fetch(`http://localhost:5000/cuidadores/${id}`, {
+            const disableUser = await fetch(`http://localhost:5000/users/${id}`, {
                 method: "DELETE"
             })
                 .then(response => response.json());
 
             console.log('disableUser: ');
-            console.log(disableUser.rowCount);
+            console.log(disableUser);
 
             if(disableUser.rowCount > 0) {
                 setUsers(users.map((user) => user.id === id ? { ...user, enabled:false } : user));
+                setDisplayedUsers(users.map((user) => user.id === id ? { ...user, enabled:false } : user));
             }
 
         } catch (error) {
@@ -126,7 +127,7 @@ const NewUsersAdmin = () => {
                 enabled: true 
             };
             const enabledUser = await fetch(
-                `http://localhost:5000/cuidadores/${id}`,
+                `http://localhost:5000/users/${id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -142,6 +143,7 @@ const NewUsersAdmin = () => {
 
             if(enabledUser.id) {
                 setUsers(users.map((user) => user.id === id ? { ...user, enabled:true } : user));
+                setDisplayedUsers(users.map((user) => user.id === id ? { ...user, enabled:true } : user));
             }
 
         } catch (error) {
@@ -209,37 +211,6 @@ const NewUsersAdmin = () => {
             console.error(error.message);
         }
 
-	}
-
-	const changeContractStatusToComplete = async (contract) => {
-		// console.log('change status to complete, contract: ', contract);
-
-		let bodyJSON = { "status": "completed" };
-
-		// update contract status by its id (contract.id)
-		const contract_update = await fetch(
-			`http://localhost:5000/contract/${contract.id}`,
-			{
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(bodyJSON)
-			}
-		)
-			.then(response => response.json())
-			.then(result => {
-				// console.log('result: ', result);
-				// console.log('contracts: ', contracts)
-				// console.log('displayed contracts: ', displayedContracts)
-
-				if(result.id > 0) {
-					setUsers(users.map((user) => user.id === result.id ? { ...user, status: 'completed' } : user));
-					setDisplayedUsers(displayedUsers.map((user) => user.id === result.id ? { ...user, status: 'completed' } : user));
-				}
-			})
-
-		// updatear contracts y displayed contracts.
 	}
 
 	const newSortUsers = (date, status) => {
@@ -418,139 +389,82 @@ const NewUsersAdmin = () => {
 		return (
 			<Fragment>
                 <div className='relative'>
-					<ClientBottomBar />
 					<div className='flex flex-row items-center justify-center relative border-b-2 border-b-gray-200'>
 						<FontAwesomeIcon
 							className='absolute left-5'
 							icon={faChevronLeft}
 							onClick={ redirectLanding }
 						/>
-						<h1 className='flex justify-center font-bold text-lg py-4'>Usuarios</h1>
+						<h1 className='flex justify-center font-bold text-lg py-4 mx-auto'>Usuarios</h1>
+						<button
+							className='bg-transparent text-green-500 font-bold text-2xl py-1 px-3 border border-green-600 hover:bg-green-100 rounded-md absolute right-5'
+							onClick={handleAddUserModalOpen}
+						>
+							+
+						</button>
 					</div>
-					<div className='mb-28'>
-						<div className='flex flex-col mx-5 mt-2 gap-3'>
-							<div className='flex flex-col'>
-								<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-									Email del usuario
-								</label>
-								<input
-									type="text"
-									name="user_id"
-									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									value={userEmail}
-									onChange={e => setUserEmail(e.target.value)}
-									required
-								/>
+					<div className='min-h-screen pb-16 bg-gradient-to-b from-gray-100 to-gray-300'>
+						<div className='w-3/5 mx-auto'>
+							<div className='flex flex-col mx-5 mt-2 gap-3'>
+								<div className='flex flex-col'>
+									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
+										Email del usuario
+									</label>
+									<input
+										type="text"
+										name="user_id"
+										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+										value={userEmail}
+										onChange={e => setUserEmail(e.target.value)}
+										required
+									/>
+								</div>
 							</div>
-						</div>
 
-						<div className='flex flex-col mx-5 mt-2 gap-3'>
-							<div className='flex flex-col'>
-								<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-									Nombre
-								</label>
-								<input
-									type="text"
-									name="user_firstname"
-									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									value={userFirstname}
-									onChange={e => setUserFirstname(e.target.value)}
-									required
-								/>
+							<div className='flex flex-col mx-5 mt-2 gap-3'>
+								<div className='flex flex-col'>
+									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
+										Nombre
+									</label>
+									<input
+										type="text"
+										name="user_firstname"
+										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+										value={userFirstname}
+										onChange={e => setUserFirstname(e.target.value)}
+										required
+									/>
+								</div>
 							</div>
-						</div>
 
-						<div className='flex flex-col mx-5 mt-2 gap-3'>
-							<div className='flex flex-col'>
-								<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-									Apellido
-								</label>
-								<input
-									type="text"
-									name="user_lastname"
-									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									value={userLastname}
-									onChange={e => setUserLastname(e.target.value)}
-									required
-								/>
+							<div className='flex flex-col mx-5 mt-2 gap-3'>
+								<div className='flex flex-col'>
+									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
+										Apellido
+									</label>
+									<input
+										type="text"
+										name="user_lastname"
+										className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+										value={userLastname}
+										onChange={e => setUserLastname(e.target.value)}
+										required
+									/>
+								</div>
 							</div>
-						</div>
 
-						<div className='mx-5 mt-3 mb-6 flex flex-col items-start'>
-							<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-								Estado del usuario
-							</label>
-							<Select
-								defaultValue={optionsEstado.find(option => option.value === 'all')}
-								onChange={ handleSearchStatusFilterChange }
-								placeholder={'Estado:'}
-								options={optionsEstado}
-								maxMenuHeight={240}
-								className='rounded-md w-full'
-								isSearchable={false}
-								theme={(theme) => ({
-									...theme,
-									borderRadius: 10,
-									colors: {
-									...theme.colors,
-									primary25: '#8FD5FF',
-									primary: 'black',
-									},
-								})}
-							/>
-						</div>
-
-						<div className='flex flex-row justify-center'>
-							<button
-								className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
-								onClick = {searchUsers}
-							>
-								Buscar usuarios
-							</button>
-						</div>
-
-						<div className='flex flex-row justify-center w-full'>
-							<button
-								className='bg-transparent text-green-500 font-semibold py-2 px-4 border border-green-600 rounded-lg w-2/3 my-5'
-								onClick={handleAddUserModalOpen}
-							>
-								Crear usuario
-							</button>
-							{/* <button
-								className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
-								onClick = {searchUsers}
-							>
-								Buscar usuarios
-							</button> */}
-						</div>
-
-						<Paginate
-							postsPerPage={postsPerPage}
-							totalPosts={displayedUsers.length}
-							paginate={paginate}
-							currentPage={currentPage}
-							setCurrentPage={setCurrentPage}
-						/>
-						<AddUser 
-							users={users}
-							setUsers={setUsers}
-							displayedUsers={displayedUsers}
-							setDisplayedUsers={setDisplayedUsers}
-							show={showAddUserModal}
-							onClose={handleAddUserModalClose}
-						/>
-						{/* <p className='m-5'>Más nuevos</p> */}
-						{searchButtonClicked && (
-							<>
-							<div className='flex flex-row'>
+							<div className='mx-5 mt-3 mb-6 flex flex-col items-start'>
+								<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
+									Estado del usuario
+								</label>
 								<Select
-									// value={selectedHoraDesde}
-									onChange={e => handleDateFilterChange(e)}
-									placeholder={'Fecha:'}
-									options={optionsFecha}
+									defaultValue={optionsEstado.find(option => option.value === 'all')}
+									onChange={ handleSearchStatusFilterChange }
+									placeholder={'Estado:'}
+									options={optionsEstado}
 									maxMenuHeight={240}
+									className='rounded-md w-full'
 									isSearchable={false}
-									className='rounded-md m-5 w-1/2'
 									theme={(theme) => ({
 										...theme,
 										borderRadius: 10,
@@ -561,15 +475,45 @@ const NewUsersAdmin = () => {
 										},
 									})}
 								/>
-								{searchButtonClicked && updateStatusSearch === 'all' && (
+							</div>
+
+							<div className='flex flex-row justify-center'>
+								<button
+									className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
+									onClick = {searchUsers}
+								>
+									Buscar usuarios
+								</button>
+							</div>
+							<div className='border-2 rounded border-gray-400 my-10'>
+							</div>
+							<Paginate
+								postsPerPage={postsPerPage}
+								totalPosts={displayedUsers.length}
+								paginate={paginate}
+								currentPage={currentPage}
+								setCurrentPage={setCurrentPage}
+							/>
+							<AddUser 
+								users={users}
+								setUsers={setUsers}
+								displayedUsers={displayedUsers}
+								setDisplayedUsers={setDisplayedUsers}
+								show={showAddUserModal}
+								onClose={handleAddUserModalClose}
+							/>
+							{/* <p className='m-5'>Más nuevos</p> */}
+							{searchButtonClicked && (
+								<>
+								<div className='flex flex-row'>
 									<Select
-										value={optionsEstado.find((option) => option.value === updateStatusFilter)}
-										onChange={e => handleStatusFilterChange(e)}
-										placeholder={'Estado:'}
-										options={statusSearch === 'all' ? optionsEstado : [optionsEstado.find((option) => option.value === updateStatusFilter)]}
+										// value={selectedHoraDesde}
+										onChange={e => handleDateFilterChange(e)}
+										placeholder={'Fecha:'}
+										options={optionsFecha}
 										maxMenuHeight={240}
-										className='rounded-md m-5 w-1/2'
 										isSearchable={false}
+										className='rounded-md m-5 w-1/2'
 										theme={(theme) => ({
 											...theme,
 											borderRadius: 10,
@@ -580,39 +524,59 @@ const NewUsersAdmin = () => {
 											},
 										})}
 									/>
+									{searchButtonClicked && updateStatusSearch === 'all' && (
+										<Select
+											value={optionsEstado.find((option) => option.value === updateStatusFilter)}
+											onChange={e => handleStatusFilterChange(e)}
+											placeholder={'Estado:'}
+											options={statusSearch === 'all' ? optionsEstado : [optionsEstado.find((option) => option.value === updateStatusFilter)]}
+											maxMenuHeight={240}
+											className='rounded-md m-5 w-1/2'
+											isSearchable={false}
+											theme={(theme) => ({
+												...theme,
+												borderRadius: 10,
+												colors: {
+												...theme.colors,
+												primary25: '#8FD5FF',
+												primary: 'black',
+												},
+											})}
+										/>
+									)}
+								</div>
+								{currentPosts.length < 1 && noUsersWithThatStatusMessage !== '' && (
+									<div className='flex flex-row mx-5'>
+										<p className='text-md font-normal text-center'>No se han encontrado usuarios en estado <span className='font-bold'>{noUsersWithThatStatusMessage}!</span></p>
+									</div>
 								)}
-							</div>
-							{currentPosts.length < 1 && noUsersWithThatStatusMessage !== '' && (
-								<div className='flex flex-row mx-5'>
-									<p className='text-md font-normal text-center'>No se han encontrado usuarios en estado <span className='font-bold'>{noUsersWithThatStatusMessage}!</span></p>
-								</div>
-							)}
 
-							{currentPosts.length < 1 && noUsersWithThatStatusMessage === '' && (
-								<div className='flex flex-row w-full justify-center'>
-									<p className='text-md font-normal text-center'>No se han encontrado usuarios!</p>
-								</div>
-							)}
+								{currentPosts.length < 1 && noUsersWithThatStatusMessage === '' && (
+									<div className='flex flex-row w-full justify-center'>
+										<p className='text-md font-normal text-center'>No se han encontrado usuarios!</p>
+									</div>
+								)}
 
-							</>
-						)}
-						{/* {currentPosts.length > 0 && (
-							
-						)} */}
-						{currentPosts.length > 0 && (
-							currentPosts.map(user => (
-								<User 
-									user={user}
-									users={users}
-									setUsers={setUsers}
-									displayedUsers={displayedUsers}
-									setDisplayedUsers={setDisplayedUsers}
-									disableUser = {disableUser}
-									enableUser = {enableUser}
-									key={user.id}
-								/>
-							))
-						)}
+								</>
+							)}
+							{/* {currentPosts.length > 0 && (
+								
+							)} */}
+							{currentPosts.length > 0 && (
+								currentPosts.map(user => (
+									<User 
+										user={user}
+										users={users}
+										setUsers={setUsers}
+										displayedUsers={displayedUsers}
+										setDisplayedUsers={setDisplayedUsers}
+										disableUser = {disableUser}
+										enableUser = {enableUser}
+										key={user.id}
+									/>
+								))
+							)}
+						</div>
 					</div>
                 </div>
 

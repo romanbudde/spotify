@@ -30,7 +30,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newUser = {};
-            const response = await fetch("http://localhost:5000/cuidadores/", {
+            const response = await fetch("http://localhost:5000/users/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -102,7 +102,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
 								</div>
 								<div className='flex flex-col'>
 									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-										Description
+										Descripción
 									</label>
 									<input
 										type="text"
@@ -115,7 +115,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
 								</div>
 								<div className='flex flex-col'>
 									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-										User type
+										Tipo de usuario
 									</label>
 									<select 
 										id="user_type"
@@ -130,7 +130,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
 								</div>
 								<div className='flex flex-col'>
 									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-										First Name
+										Nombre
 									</label>
 									<input
 										type="text"
@@ -143,7 +143,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
 								</div>
 								<div className='flex flex-col'>
 									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-										Last Name
+										Apellido
 									</label>
 									<input
 										type="text"

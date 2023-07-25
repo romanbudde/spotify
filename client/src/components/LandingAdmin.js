@@ -6,7 +6,8 @@ import Cookies from 'universal-cookie';
 import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup, faRecordVinyl, faIcons } from '@fortawesome/free-solid-svg-icons';
+import {BsHeadphones} from 'react-icons/bs';
 import CuidadorBottomBar from './CuidadorBottomBar';
 
 const LandingAdmin = () => {
@@ -47,42 +48,53 @@ const LandingAdmin = () => {
 	if(isAuthenticated){
 		return (
 			<Fragment>
-				<div className='relative h bg-black'>
-					<CuidadorBottomBar />
-					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 bg-black'>
+				<div className='relative h-screen bg-gradient-to-b from-gray-400 to-gray-100'>
+					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 shadow-lg bg-black'>
 						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
 						<p className='text-md text-gray-500 ml-3'>Panel de Administrador</p>
+						<div className='ml-auto flex flex-row items-center gap-16 mr-5'>
+							<p
+								className='text-white ml-auto font-medium text-sm cursor-pointer hover:underline hover:scale-105'
+								onClick={ (e) => { redirectProfile(e) }}
+							>
+								Mi perfil
+							</p>
+							<p
+								className='ml-auto mr-5 cursor-pointer hover:underline font-medium text-sm text-gray-400'
+								onClick={() => logout()}
+							>
+								Cerrar sesión
+							</p>
+						</div>
 					</div>
-					<div className='space-y-5 p-7 my-2 mx-auto w-1/2 flex flex-col justify-center items-center bg-black'>
+					<div className='gap-5 my-10 mx-auto w-1/2 grid grid-cols-2 grid-rows-2'>
 						<button
-							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+							className='h-52 flex flex-col gap-5 items-center justify-center w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center'
 							onClick={ (e) => { redirectCanciones(e) }}
 						>
-							Canciones
+							<BsHeadphones className='text-8xl'></BsHeadphones>
+							<p className='font-bold text-xl text-white'>Canciones</p>
 						</button>
 						<button
-							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+							className='h-52 flex flex-col gap-5 items-center justify-center w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center'
 							onClick={ (e) => { redirectArtistas(e) }}
 						>
-							Artistas
+							<FontAwesomeIcon className='text-8xl' icon={faRecordVinyl} />
+							<p className='font-bold text-xl text-white'>Artistas</p>
 						</button>
 						<button
-							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+							className='h-52 flex flex-col gap-5 items-center justify-center w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center'
 							onClick={ (e) => { redirectGeneros(e) }}
 						>
-							Generos
+							<FontAwesomeIcon className='text-8xl' icon={faIcons} />
+							<p className='font-bold text-xl text-white'>Géneros</p>
 						</button>
 						<button
-							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+							className='h-52 flex flex-col gap-5 items-center justify-center w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center'
 							onClick={ (e) => { redirectUsuarios(e) }}
 						>
-							Usuarios
-						</button>
-						<button
-							className='w-full text-white bg-gradient-to-r from-green-500 to-green-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={ (e) => { redirectProfile(e) }}
-						>
-							Mi perfil
+							<FontAwesomeIcon className='text-8xl' icon={faUserGroup} />
+							<p className='font-bold text-xl text-white'>Usuarios</p>
 						</button>
 					</div>
 				</div>

@@ -98,7 +98,7 @@ const UserEditData = ({ user, setUser, show, onClose }) => {
 			console.log('bodyJSON: ', bodyJSON);
             const id = user.id;
             const userUpdate = await fetch(
-                `http://localhost:5000/cuidadores/${user.id}`,
+                `http://localhost:5000/users/${user.id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -297,7 +297,7 @@ const UserEditData = ({ user, setUser, show, onClose }) => {
 						</div>
 						{  displayEditDataMessage && editDataMessageError === true  &&(
 							<div className='fixed inset-0 bg-gray-900 bg-opacity-40 z-50 flex justify-center items-center'>
-								<div className='bg-red-500 p-5 rounded w-9/12 flex flex-col gap-5 items-center justify-center relative'>
+								<div className='bg-red-500 p-5 rounded w-9/12 max-w-lg flex flex-col gap-5 items-center justify-center relative'>
 									<button onClick={ closeEditDataMessage } type="button" className="absolute top-2 right-2 text-gray-100 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="defaultModal">
 										<svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path></svg>
 										<span className="sr-only">Close modal</span>
@@ -316,7 +316,7 @@ const UserEditData = ({ user, setUser, show, onClose }) => {
 						)}
 						{ displayEditDataMessage && editDataMessageError === false && (
 							<div className='fixed inset-0 bg-gray-900 bg-opacity-40 z-50 flex justify-center items-center'>
-								<div className='bg-green-400 p-5 rounded w-9/12 flex flex-col gap-5 items-center justify-center relative'>
+								<div className='bg-green-400 p-5 rounded w-9/12 max-w-lg flex flex-col gap-5 items-center justify-center relative'>
 									<button onClick={ closeEditDataMessage } type="button" className="absolute top-2 right-2 text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="defaultModal">
 										<svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path></svg>
 										<span className="sr-only">Close modal</span>

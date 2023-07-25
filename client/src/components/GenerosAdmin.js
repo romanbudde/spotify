@@ -136,31 +136,22 @@ const GenerosAdmin = () => {
 		return (
 			<Fragment>
                 <div className='relative'>
-					<ClientBottomBar />
 					<div className='flex flex-row items-center justify-center relative border-b-2 border-b-gray-200'>
 						<FontAwesomeIcon
-							className='absolute left-5'
+							className='absolute left-5 cursor-pointer'
 							icon={faChevronLeft}
 							onClick={ redirectLanding }
 						/>
-						<h1 className='flex justify-center font-bold text-lg py-4'>Generos</h1>
+						<h1 className='flex justify-center font-bold text-lg py-4 mx-auto'>Géneros</h1>
+						<button
+							className='bg-transparent text-green-500 font-bold text-2xl py-1 px-3 border border-green-600 hover:bg-green-100 rounded-md absolute right-5'
+							onClick={handleAddGenreModalOpen}
+						>
+							+
+						</button>
 					</div>
-					<div className='mb-28'>
+					<div className='h-screen bg-gradient-to-b from-gray-100 to-gray-300'>
 
-						<div className='flex flex-row justify-center w-full'>
-							<button
-								className='bg-transparent text-green-500 font-semibold py-2 px-4 border border-green-600 rounded-lg w-2/3 my-5'
-								onClick={handleAddGenreModalOpen}
-							>
-								Crear genero
-							</button>
-							{/* <button
-								className='text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-2/3 py-2.5 text-center shadow-lg'
-								onClick = {searchUsers}
-							>
-								Buscar usuarios
-							</button> */}
-						</div>
 						<AddGenero
 							genres={genres}
 							setGenres={setGenres}

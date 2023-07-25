@@ -155,7 +155,7 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
 });
 
 // create - un cuidador
-app.post('/cuidadores', async(req, res) => {
+app.post('/users', async(req, res) => {
     try {
         console.log('---- backend ----');
         console.log(req.body);
@@ -1374,7 +1374,7 @@ app.get("/caregiver_get_available_dates", async (req, res) => {
 });
 
 // update individual - cuidador
-app.put("/cuidadores/:id", async(req, res) => {
+app.put("/users/:id", async(req, res) => {
     try {
         const {id} = req.params;
         const { description, email, firstname, lastname, userType, enabled, hourlyRate, address } = req.body;
@@ -1398,7 +1398,7 @@ app.put("/cuidadores/:id", async(req, res) => {
 });
 
 // delete (by id) individual - cuidador
-app.delete("/cuidadores/:id", async(req, res) => {
+app.delete("/users/:id", async(req, res) => {
     try {
         const {id} = req.params;
         const deleteUser = await pool.query(

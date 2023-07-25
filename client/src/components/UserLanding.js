@@ -46,7 +46,6 @@ const UserLanding = () => {
 	const [popperElement, setPopperElement] = useState(null);
 	const { styles, attributes } = usePopper(referenceElement, popperElement, { placement: "bottom-start"});
 	
-
 	// console.log('songs: ', songs);
 	// console.log('artists: ', artists);
 	// console.log('genres: ', genres);
@@ -410,7 +409,13 @@ const UserLanding = () => {
 			<Fragment>
 				<div className='relative min-h-screen bg-black text-white mb-28'>
 					<div className='flex flex-row items-center w-full justify-left pl-16 relative border-b-2 border-b-gray-800 bg-black'>
-						<h1 className='flex justify-center font-bold text-2xl py-4 text-green-400'>Trackify</h1>
+						<h1 className='font-bold text-2xl py-4 text-green-400'>Trackify</h1>
+						<p
+							className='ml-auto mr-5 cursor-pointer hover:underline font-medium text-sm text-gray-400'
+							onClick={() => logout()}
+						>
+							Cerrar sesión
+						</p>
 					</div>
 					<div className='flex flex-row gap-2 m-2'>
 						<div className='flex flex-col gap-3'>

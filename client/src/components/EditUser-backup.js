@@ -35,7 +35,7 @@ const EditUser = ({ user, show, onClose, users, setUsers, displayedUsers, setDis
             };
             const id = user.id;
             const userUpdate = await fetch(
-                `http://localhost:5000/cuidadores/${user.id}`,
+                `http://localhost:5000/users/${user.id}`,
                 {
                     method: "PUT",
                     headers: {

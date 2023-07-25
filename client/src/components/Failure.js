@@ -52,7 +52,7 @@ const Failure = () => {
 	}
 
 	const getUserData = async () => {
-		const response = await fetch("http://localhost:5000/cuidadores/" + userId);
+		const response = await fetch("http://localhost:5000/users/" + userId);
 		const jsonData = await response.json();
 
 		console.log('---- inside getUserData ----');

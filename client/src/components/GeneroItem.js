@@ -18,69 +18,6 @@ const GeneroItem = ({ genre, genres, setGenres, displayedGenres, setDisplayedGen
         setShowEditModal(false);
     }
 
-    // delete song function
-    // const disableSong = async (id) => {
-    //     try {
-    //         console.log('song id to disable: ', id);
-    //         let disabledUser = {};
-    //         const disableSong = await fetch(`http://localhost:5000/songs/${id}`, {
-    //             method: "DELETE"
-    //         })
-    //             .then(response => response.json());
-
-    //         console.log('disableSong: ');
-    //         console.log(disableSong.rowCount);
-
-    //         if(disableSong.rowCount > 0) {
-    //             setSongs(songs.map((song) => song.id === id ? { ...song, enabled: false } : song));
-    //             setDisplayedSongs(songs.map((song) => song.id === id ? { ...song, enabled: false } : song));
-    //         }
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // // enable song function
-    // const enableSong = async (id, song) => {
-    //     try {
-    //         let bodyJSON = { 
-    //             description: song.description, 
-    //             email: song.mail, 
-    //             firstname: song.name, 
-    //             lastname: song.last_name, 
-    //             songType: song.type, 
-    //             enabled: true
-    //         };
-    //         const enabledSong = await fetch(
-    //             `http://localhost:5000/songs/${id}`,
-    //             {
-    //                 method: "PUT",
-    //                 headers: {
-    //                     "Content-Type": "application/json"
-    //                 },
-    //                 body: JSON.stringify(bodyJSON)
-    //             }
-    //         )
-    //             .then(response => response.json());
-
-    //         console.log('enabledSong: ');
-    //         console.log(enabledSong.id);
-
-    //         if(enabledSong.id) {
-    //             setSongs(songs.map((song) => song.id === id ? { ...song, enabled:true } : song));
-    //             setDisplayedSongs(songs.map((song) => song.id === id ? { ...song, enabled:true } : song));
-    //         }
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     handleClose()
-    // }, [user])
-
     return (
         <>
             <div
@@ -88,28 +25,10 @@ const GeneroItem = ({ genre, genres, setGenres, displayedGenres, setDisplayedGen
                 key={genre.id}
             >
                 <p>{genre.name}</p>
-                {/* {
-                    artist.enabled ? (
-                        <button
-                            className='bg-red-700 text-white hover:bg-red-500 font-semibold hover:text-white py-2 px-4 rounded'
-                            onClick={() => disableArtist(artist.id)}
-                        >
-                            Desactivar
-                        </button>
-
-                    ) : (
-                        <button
-                            className='bg-green-700 text-white hover:bg-green-500 font-semibold hover:text-white py-2 px-4 border border-green-600 hover:border-transparent rounded'
-                            onClick={() => enableArtist(artist.id, artist)}
-                        >
-                            Activar
-                        </button>
-                    )
-                } */}
 
                 <FontAwesomeIcon
                     icon={faPenToSquare}
-                    className='text-2xl absolute right-5 hover:scale-110'
+                    className='text-2xl absolute right-5 hover:scale-110 cursor-pointer'
                     onClick={handleShow}
                 />
                 <EditGenre
