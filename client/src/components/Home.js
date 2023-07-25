@@ -20,7 +20,7 @@ const Home = () => {
 			const body = {email, password};
 			console.log(JSON.stringify(body));
 			console.log('---- end of body to be submitted ----');
-			const response = await fetch(process.env.PROD_SERVER ? `${process.env.PROD_SERVER}/login` :"http://localhost:5000/login", {
+			const response = await fetch("https://spotify-server-v0hq.onrender.com/login", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
