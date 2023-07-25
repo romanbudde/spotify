@@ -39,11 +39,3 @@ services:
       restart: always
       ports:
         - 8080:8080
-
-    # ngrok:
-    #   image: wernight/ngrok
-    #   volumes:
-    #     - ./ngrok.yml:/home/ngrok/.ngrok2/ngrok.yml
-    #   ports:
-    #     - "4040:4040"
-    #   command: ["ngrok", "http", "server:5000"]

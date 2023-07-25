@@ -1,8 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import AddCancion from './AddCancion';
-import User from './User';
-import EditUser from './EditUser';
-import EditSede from './EditSede';
 
 import * as Yup from 'yup';
 import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-geocoder-autocomplete';

@@ -7,7 +7,7 @@ import { songsData } from '../Player/audios';
 import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faHouse, faVolumeXmark, faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 import ClientBottomBar from './ClientBottomBar';
 import moment from 'moment';
 import {BsFillPlayCircleFill, BsFillPauseCircleFill, BsFillSkipStartCircleFill, BsSkipEndCircleFill, BsFillSkipEndCircleFill} from 'react-icons/bs';
@@ -15,6 +15,25 @@ import {BsFillPlayCircleFill, BsFillPauseCircleFill, BsFillSkipStartCircleFill, 
 
 const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIsPlaying, audioElem}) => {
 	const { isAuthenticated } = useContext(AuthContext);
+	const [volume, setVolume] = useState(100);
+	const [previousVolume, setPreviousVolume] = useState(100);
+
+	const handleVolumeChange = (newVolumeValue) => {
+		audioElem.current.volume = newVolumeValue;
+		setVolume(newVolumeValue);
+	}
+
+	const handleVolumeMute = () => {
+		audioElem.current.volume = 0;
+		setPreviousVolume(volume);
+		setVolume(0);
+	}
+
+	const handleVolumeUnmute = () => {
+		audioElem.current.volume = previousVolume;
+		// setPreviousVolume(volume);
+		setVolume(previousVolume);
+	}
 
 	const numberToTime = (number) => {
 		if (number && typeof number === 'number') {
@@ -24,8 +43,8 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 		return '00:00';
 	};
 
-	console.log('songs: ', songs);
-	console.log('current song: ', currentSong);
+	// console.log('songs: ', songs);
+	// console.log('current song: ', currentSong);
 	// console.log('current song duration: ', numberToTime(currentSong.length));
 	// console.log('current song progress: ', numberToTime(currentSong.progress));
 
@@ -138,25 +157,55 @@ const Player = ({ songs, setSongs, isPlaying, currentSong, setCurrentSong, setIs
 						</div>
 					</div>
 					<div className='controls flex flex-row gap-4 items-center justify-center text-white pt-3 pb-5'>
-						<BsFillSkipStartCircleFill 
-							className='btn_action text-4xl cursor-pointer hover:opacity-70'
-							onClick={() => prevSong()}
-						/>
-						{ isPlaying ? (
-							<BsFillPauseCircleFill
-								className='btn_action text-5xl hover:scale-105 cursor-pointer'
-								onClick={PlayPause}
+						<div className='flex flex-row gap-2 mx-auto items-center justify-center relative'>
+							<BsFillSkipStartCircleFill 
+								className='btn_action text-4xl cursor-pointer hover:opacity-70'
+								onClick={() => prevSong()}
 							/>
-						) : (
-							<BsFillPlayCircleFill
-								className='btn_action text-5xl hover:scale-105'
-								onClick={PlayPause}
+							{ isPlaying ? (
+								<BsFillPauseCircleFill
+									className='btn_action text-5xl hover:scale-105 cursor-pointer'
+									onClick={PlayPause}
+								/>
+							) : (
+								<BsFillPlayCircleFill
+									className='btn_action text-5xl hover:scale-105 cursor-pointer'
+									onClick={PlayPause}
+								/>
+							)}
+							<BsFillSkipEndCircleFill
+								className='btn_action text-4xl cursor-pointer hover:opacity-70'
+								onClick={() => nextSong()}
 							/>
-						)}
-						<BsFillSkipEndCircleFill
-							className='btn_action text-4xl cursor-pointer hover:opacity-70'
-							onClick={() => nextSong()}
-						/>
+							<div className='flex flex-row gap-2 items-center justify-center absolute left-48'>
+								{volume > 0.00 ? (
+									<FontAwesomeIcon
+										className='cursor-pointer'
+										icon={faVolumeHigh}
+										onClick={() => handleVolumeMute()}
+									/>
+								) : (
+									<FontAwesomeIcon
+										icon={faVolumeXmark}
+										className='cursor-pointer'
+										onClick={() => handleVolumeUnmute()}
+									/>
+								)}
+
+								<input
+									type="range"
+									className='rounded-lg appearance-none bg-gray-300 hover:bg-gray-400 h-2 cursor-w-resize'
+									min={0}
+									max={1}
+									step={0.01}
+									value={volume}
+									onChange={event => {
+										handleVolumeChange(event.target.valueAsNumber)
+									}}
+								/>
+
+							</div>
+						</div>
 					</div>
 				</div>
 			</Fragment>

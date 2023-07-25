@@ -1,13 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import AddGenero from './AddGenero';
-import User from './User';
-import EditUser from './EditUser';
-import EditSede from './EditSede';
 
-import * as Yup from 'yup';
-import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-geocoder-autocomplete';
 import '@geoapify/geocoder-autocomplete/styles/minimal.css';
-import Autocomplete from "react-google-autocomplete";
 
 import { json, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
@@ -15,17 +9,10 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faHouse, faCheck, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import Datepicker from "react-tailwindcss-datepicker";
 import '../css/datepicker.css';
 import dayjs from 'dayjs';
-import moment from 'moment';
-import ClientBottomBar from './ClientBottomBar';
 import GeneroItem from './GeneroItem';
 import Paginate from './Paginate';
-import Select from 'react-select';
-
-import mercado_pago_icon from "../images/mercado-pago-icon.svg";
-import cash_bill_icon from "../images/cash-bill.svg";
 
 const GenerosAdmin = () => {
 	const navigate = useNavigate();

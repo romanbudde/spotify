@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import UserEditData from './UserEditData';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faCirclePlus, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faComment, faEnvelope, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import ClientBottomBar from './ClientBottomBar';
 import CuidadorBottomBar from './CuidadorBottomBar';
 
@@ -141,37 +141,9 @@ const Account = () => {
 					{ user.type === 0 && (
 						<ClientBottomBar/>
 					)}
-					<div className='w-full flex flex-col items-center px-5 space-y-3'>
-						<h1 className='font-medium text-lg'>Hola, {user.name}!</h1>
-
-						<form onSubmit={handleSubmit} className='flex flex-col gap-3 items-center justify-center'>
-							<div className='relative'>
-								<input type='file' name='file' id='file' onChange={handleFileChange} className='z-50 absolute opacity-0 focus:outline-none w-full h-full'></input>
-								{image.preview ? (
-									<img src={image.preview} className='rounded-full border-2 border-gray-200' width='125' height='100' />
-								) : (
-									user.profile_picture_url !== '' ? (
-										<img src={`http://localhost:5000/${user.profile_picture_url}`} alt='Profile pic' className='rounded-full border-2 border-gray-200' width='125' height='100' />
-									) : (
-										<img src={`http://localhost:5000/no_picture.jpg`} alt='Profile pic' className='rounded-full border-2 border-gray-200' width='125' height='100' />
-									)
-								)}
-								<FontAwesomeIcon icon={faCirclePlus} className='absolute right-2 bottom-1 text-3xl bg-white rounded-full'/>
-							</div>
-							{ image.preview && (
-								<button className='bg-gray-800 text-white py-3 px-10 font-medium text-sm' type='submit'>Guardar foto</button>
-							)}
-						</form>
-						{imageUploadError && (
-							<div className='bg-red-500 mx-5 p-2 rounded-lg'>
-								<p className='text-center text-white font-medium'>{imageUploadMessage}</p>
-							</div>
-						)}
-						{imageUploadSuccess && (
-							<div className='bg-green-500 w-full mx-5 p-2 rounded-lg'>
-								<p className='text-center text-white font-medium'>{imageUploadMessage}</p>
-							</div>
-						)}
+					<div className='relative h-screen bg-gradient-to-b from-gray-100 to-gray-300 w-full flex flex-col items-center px-5 space-y-3'>
+						<h1 className='font-medium text-lg flex flex-row items-center gap-1'>Hola, <p className='p-1 px-2 bg-green-300 rounded-md'>{user.name}!</p>
+						</h1>
 
 						<UserEditData
 							user={user}
@@ -181,15 +153,14 @@ const Account = () => {
 							onClose={handleClose}
 						/>
 						<div className='flex flex-col text-left space-y-4'>
-							<p>Tu mail actual es {user.mail}</p>
-							<p>Tu descripcion es: {user.description}</p>
-							<p>Tu dirección es: {user.address}</p>
-							{ user.type === 1 && (
-								<>
-									<p>Tarifa por media hora: {user.hourly_rate}</p>
-									<p>Puntaje promedio segun las reseñas: {user.average_review_score}</p>
-								</>
-							)}
+							<div className='flex flex-row gap-3 items-center'>
+								<FontAwesomeIcon className='text-2xl' icon={faEnvelope} />
+								<p>Tu email actual es {user.mail}</p>
+							</div>
+							<div className='flex flex-row gap-3 items-center'>
+								<FontAwesomeIcon className='text-2xl' icon={faComment} />
+								<p>Tu descripción es: {user.description}</p>
+							</div>
 						</div>
 					</div>
 				</div>

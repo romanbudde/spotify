@@ -1,10 +1,4 @@
 import React, { Fragment, useContext, useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faHouse, faCheck, faCircleXmark, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import dayjs from 'dayjs';
-import moment from 'moment';
-import EditSede from './EditSede';
-import UserEditData from './UserEditData';
 
 const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs, artists, genres }) => {
 
@@ -147,26 +141,6 @@ const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs, ar
                         </button>
                     )
                 }
-
-                {/* <div
-                    className='bg-gray-900 flex flex-row items-center gap-3 p-2 mb-3 mt-3 rounded-lg shadow-md w-full'
-                    onClick={handleShow}
-                >
-                    <FontAwesomeIcon
-                        icon={faPenToSquare}
-                        className=''
-                    />
-                    <p>Editar datos</p>
-                </div> */}
-                {/* <EditSede
-                    song={song}
-                    songs={songs}
-                    setSongs={setSongs}
-                    displayedSongs={displayedSongs}
-                    setDisplayedSongs={setDisplayedSongs}
-                    show={showEditModal}
-                    onClose={handleClose}
-                /> */}
             </div>
         </>
     )
