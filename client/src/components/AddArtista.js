@@ -59,7 +59,7 @@ const AddArtista = ( {artists, setArtists, show, onClose, displayedArtists, setD
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newArtist = {};
-            const response = await fetch("http://localhost:5000/artist/", {
+            const response = await fetch(process.env.PROD_SERVER ? `${process.env.PROD_SERVER}/artist/` : "http://localhost:5000/artist/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

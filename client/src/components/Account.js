@@ -15,6 +15,9 @@ const Account = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 	const { userId } = useContext(AuthContext);
 
+	console.log('--------- ENV variable - PROD SERVER: ', process.env.PROD_SERVER)
+	console.log('--------- ENV variable - PROD SERVER: ', process.env.REACT_APP_PROD_SERVER)
+
 	const [user, setUser] = useState('');
 	const [userTypes, setUserTypes] = useState([]);
 	const [showEditModal, setShowEditModal] = useState(false);
@@ -23,32 +26,6 @@ const Account = () => {
 	const [imageUploadSuccess, setImageUploadSuccess] = useState(false);
 	const [imageUploadMessage, setImageUploadMessage] = useState('');
 	const [status, setStatus] = useState('');
-
-	const handleSubmit = async (e) => {
-		e.preventDefault()
-		let formData = new FormData()
-		formData.append('file', image.data)
-		formData.append('user_id', userId)
-		const response = await fetch('http://localhost:5000/upload_image', {
-		  method: 'POST',
-		  body: formData,
-		}).then(response => response.json())
-		.then(result => {
-			if (!result.error){
-				console.log('------- no hay error al subir la imagen');
-				setStatus(result.statusText);
-				setImageUploadError(false);
-				setImageUploadSuccess(true);
-				setImageUploadMessage('Foto de perfil actualizada!');
-			}
-			else {
-				console.log('------- hubo un error al subir la imagen');
-				setImageUploadSuccess(false);
-				setImageUploadError(true);
-				setImageUploadMessage(result.error);
-			}
-		})
-	}
 	
 	const handleFileChange = (e) => {
 		const img = {
@@ -90,7 +67,7 @@ const Account = () => {
 	}
 
 	const getUserData = async () => {
-		const response = await fetch("http://localhost:5000/users/" + userId);
+		const response = await fetch(process.env.PROD_SERVER ? `${process.env.PROD_SERVER}/users/${userId}` : "http://localhost:5000/users/" + userId);
 		const jsonData = await response.json();
 
 		console.log('---- inside getUserData ----');
@@ -102,7 +79,7 @@ const Account = () => {
 	// get all users function
     const getUserTypes = async () => {
         try {
-            const response = await fetch("http://localhost:5000/user_types/");
+            const response = await fetch(process.env.PROD_SERVER ? `${process.env.PROD_SERVER}/user_types/` :"http://localhost:5000/user_types/");
             const jsonData = await response.json();
 
 			console.log('---- inside getUserTypes ----');
