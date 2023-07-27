@@ -656,7 +656,7 @@ app.get("/genres", async(req, res) => {
     }
 });
 
-// create - una cancion
+// create - un genero
 app.post('/genre', async(req, res) => {
     try {
         console.log('---- backend post /genre ----');
@@ -674,6 +674,34 @@ app.post('/genre', async(req, res) => {
 
         // res.json(req.body);
         res.json(newSong.rows[0]);
+    }
+    catch (error) {
+        console.error(error.message);
+    }
+});
+
+
+// update individual - genero
+app.put("/genre/:id", async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        console.log('name: ', name);
+        console.log('id: ', id);
+        const updateGenre = await pool.query(
+            "UPDATE genre SET name = $1 WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+
+        console.log('updateGenre: ', updateGenre.rows[0])
+
+        if(updateGenre.rowCount > 0){
+            res.json(updateGenre.rows[0]);
+            // res.json('asd');
+        }
+        else {
+            res.json('Oops! No genre with given ID (' + id + ') has been found.');
+        }
     }
     catch (error) {
         console.error(error.message);

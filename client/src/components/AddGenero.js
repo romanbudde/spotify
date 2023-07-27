@@ -143,7 +143,7 @@ const AddGenero = ( {genres, setGenres, show, onClose, displayedGenres, setDispl
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Error!</p>
-										<p className='text-white text-center font-medium'>No se ha podido crear la cancion.</p>
+										<p className='text-white text-center font-medium'>No se ha podido crear el género.</p>
 										<FontAwesomeIcon icon={faCircleXmark} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-red-800 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'
@@ -162,7 +162,7 @@ const AddGenero = ( {genres, setGenres, show, onClose, displayedGenres, setDispl
 											<span className="sr-only">Close modal</span>
 										</button>
 										<p className='font-bold text-2xl text-white'>Genial!</p>
-										<p className='text-white text-center font-medium'>Cancion creada con éxito</p>
+										<p className='text-white text-center font-medium'>Género creado con éxito</p>
 										<FontAwesomeIcon icon={faCircleCheck} size="2xl" className='text-8xl' style={{color: "#fff",}} />
 										<button
 											className='bg-green-600 mt-10 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-full'
