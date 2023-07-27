@@ -326,7 +326,7 @@ const UserLanding = () => {
 	// get all genres
 	const getGenres = async () => {
         try {
-            const response = await fetch("http://localhost:5000/genres/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `genres/`);
             const jsonData = await response.json();
 
             setGenres(jsonData);
@@ -338,7 +338,7 @@ const UserLanding = () => {
 	// get all artists
 	const getArtists = async () => {
         try {
-            const response = await fetch("http://localhost:5000/artists/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `artists/`);
             const jsonData = await response.json();
 
             setArtists(jsonData);
@@ -350,7 +350,7 @@ const UserLanding = () => {
 	// get all playlists for logged in user
 	const getPlaylists = async () => {
         try {
-		const response = await fetch(`http://localhost:5000/playlists?user_id=${userId}`);
+		const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlists?user_id=${userId}`);
             const jsonData = await response.json();
 
             setPlaylists(jsonData);
