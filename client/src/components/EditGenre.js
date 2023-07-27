@@ -87,7 +87,7 @@ const EditGenre = ({ genre, genres, setGenres, displayedGenres, setDisplayedGenr
 			// console.log('------------ sedes', sedes);
 			// console.log('------------ displayed sedes', displayedSedes);
 
-            setGenres(genre.map((genre) => genre.id === genreUpdate.id ? genreUpdate : genre));
+            setGenres(genres.map((genre) => genre.id === genreUpdate.id ? genreUpdate : genre));
             setDisplayedGenres(displayedGenres.map((genre) => genre.id === genreUpdate.id ? genreUpdate : genre));
 
 			if (genreUpdate.id){
