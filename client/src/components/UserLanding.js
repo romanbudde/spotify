@@ -264,7 +264,7 @@ const UserLanding = () => {
 	const searchSongs = async (name) => {
 		try {
 			if(name !== '') {
-				const response = await fetch(`http://localhost:5000/songs-search?name=${name}`);
+				const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs-search?name=${name}`);
 				const jsonData = await response.json();
 	
 				setSongs(jsonData);
