@@ -20,7 +20,7 @@ const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs, ar
         try {
             console.log('song id to disable: ', id);
             let disabledUser = {};
-            const disableSong = await fetch(`http://localhost:5000/songs/${id}`, {
+            const disableSong = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/${id}`, {
                 method: "DELETE"
             })
                 .then(response => response.json());
@@ -50,7 +50,7 @@ const SongItem = ({ song, songs, setSongs, displayedSongs, setDisplayedSongs, ar
                 enabled: true
             };
             const enabledSong = await fetch(
-                `http://localhost:5000/songs/${id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/${id}`,
                 {
                     method: "PUT",
                     headers: {

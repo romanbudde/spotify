@@ -99,7 +99,7 @@ const UserEditData = ({ user, users, setUsers, displayedUsers, setDisplayedUsers
 			console.log('bodyJSON: ', bodyJSON);
             const id = user.id;
             const userUpdate = await fetch(
-                `http://localhost:5000/users/${user.id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${user.id}`,
                 {
                     method: "PUT",
                     headers: {

@@ -35,7 +35,7 @@ const EditUser = ({ user, show, onClose, users, setUsers, displayedUsers, setDis
             };
             const id = user.id;
             const userUpdate = await fetch(
-                `http://localhost:5000/users/${user.id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${user.id}`,
                 {
                     method: "PUT",
                     headers: {

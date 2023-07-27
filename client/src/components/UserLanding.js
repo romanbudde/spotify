@@ -72,7 +72,7 @@ const UserLanding = () => {
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let updatedPlaylist = {};
-            const response = await fetch("http://localhost:5000/playlist-add-song", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist-add-song`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -114,7 +114,7 @@ const UserLanding = () => {
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newPlaylist = {};
-            const response = await fetch(`http://localhost:5000/playlist?id=${selectedPlaylist.id}`, {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist?id=${selectedPlaylist.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -155,7 +155,7 @@ const UserLanding = () => {
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let updatedPlaylist = {};
-            const response = await fetch("http://localhost:5000/playlist", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -196,7 +196,7 @@ const UserLanding = () => {
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newPlaylist = {};
-            const response = await fetch("http://localhost:5000/playlist", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -232,7 +232,7 @@ const UserLanding = () => {
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newPlaylist = {};
-            const response = await fetch("http://localhost:5000/playlist", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -285,7 +285,7 @@ const UserLanding = () => {
 			let jsonData;
 			const body = { songs_ids };
 			console.log('getPlaylistSongs, ids to get: ', songs_ids);
-			const response = await fetch("http://localhost:5000/playlist-songs", {
+			const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `playlist-songs`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -887,7 +887,7 @@ const UserLanding = () => {
 					</div>
 				</div>
 				<audio
-					src={songs.length > 0 ? `http://localhost:5000/${currentSong.song_path}` : ''}
+					src={songs.length > 0 ? (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `${currentSong.song_path}` : ''}
 					ref={audioElem}
 					onTimeUpdate={onPlaying}
 				/>

@@ -88,7 +88,7 @@ const GenerosAdmin = () => {
 	};
 
     const getUserData = async () => {
-		const response = await fetch("http://localhost:5000/users/" + userId);
+		const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${userId}`);
 		const jsonData = await response.json();
 
 		console.log('---- inside getUserData ----');
@@ -100,7 +100,7 @@ const GenerosAdmin = () => {
 	// get all users function
 	const getGenres = async () => {
         try {
-            const response = await fetch("http://localhost:5000/genres/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `genres/`);
             const jsonData = await response.json();
 
             setGenres(jsonData);

@@ -63,7 +63,7 @@ const EditArtist = ({ artist, artists, setArtists, displayedArtists, setDisplaye
 			console.log('bodyJSON: ', bodyJSON);
             const id = artist.id;
             const artistUpdate = await fetch(
-                `http://localhost:5000/artist/${artist.id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `artist/${artist.id}`,
                 {
                     method: "PUT",
                     headers: {

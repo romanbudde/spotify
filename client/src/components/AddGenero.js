@@ -48,7 +48,7 @@ const AddGenero = ( {genres, setGenres, show, onClose, displayedGenres, setDispl
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newGenre = {};
-            const response = await fetch("http://localhost:5000/genre/", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `genre/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

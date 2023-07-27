@@ -86,7 +86,7 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 			let formData = new FormData();
 			formData.append('file', file.data);
 			// formData.append('song_id', userId);
-			const response_file = await fetch('http://localhost:5000/upload_song', {
+			const response_file = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `upload_song`, {
 				method: 'POST',
 				body: formData,
 			}).then(response_file => response_file.json())
@@ -111,7 +111,7 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newSong = {};
-            const response = await fetch("http://localhost:5000/songs/", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

@@ -63,7 +63,7 @@ const EditGenre = ({ genre, genres, setGenres, displayedGenres, setDisplayedGenr
 			console.log('bodyJSON: ', bodyJSON);
             const id = genre.id;
             const genreUpdate = await fetch(
-                `http://localhost:5000/genre/${genre.id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `genre/${genre.id}`,
                 {
                     method: "PUT",
                     headers: {

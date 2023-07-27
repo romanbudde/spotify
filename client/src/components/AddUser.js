@@ -30,7 +30,7 @@ const AddUser = ( {users, setUsers, show, onClose, displayedUsers, setDisplayedU
             console.log(JSON.stringify(body));
             console.log('---- end of body to be submitted ----');
             let newUser = {};
-            const response = await fetch("http://localhost:5000/users/", {
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

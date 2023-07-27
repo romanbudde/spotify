@@ -50,7 +50,7 @@ const Register = () => {
 			console.log(JSON.stringify(body));
 			console.log('---- end of body to be submitted ----');
 			let newUser = {};
-			const response = await fetch("http://localhost:5000/register/", {
+			const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `register/`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

@@ -102,7 +102,7 @@ const CancionesAdmin = () => {
 	};
 
     const getUserData = async () => {
-		const response = await fetch("http://localhost:5000/users/" + userId);
+		const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${userId}`);
 		const jsonData = await response.json();
 
 		console.log('---- inside getUserData ----');
@@ -114,7 +114,7 @@ const CancionesAdmin = () => {
 	// get all users function
 	const getSongs = async () => {
         try {
-            const response = await fetch("http://localhost:5000/songs/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/`);
             const jsonData = await response.json();
 
             setSongs(jsonData);
@@ -127,7 +127,7 @@ const CancionesAdmin = () => {
 	// get all users function
 	const getArtists = async () => {
         try {
-            const response = await fetch("http://localhost:5000/artists/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `artists/`);
             const jsonData = await response.json();
 
             setArtistsData(jsonData);
@@ -147,7 +147,7 @@ const CancionesAdmin = () => {
 	// get all users function
 	const getGenres = async () => {
         try {
-            const response = await fetch("http://localhost:5000/genres/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `genres/`);
             const jsonData = await response.json();
 
             setGenresData(jsonData);

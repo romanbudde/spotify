@@ -96,7 +96,7 @@ const NewUsersAdmin = () => {
     const disableUser = async (id) => {
         try {
             let disabledUser = {};
-            const disableUser = await fetch(`http://localhost:5000/users/${id}`, {
+            const disableUser = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${id}`, {
                 method: "DELETE"
             })
                 .then(response => response.json());
@@ -126,7 +126,7 @@ const NewUsersAdmin = () => {
                 enabled: true 
             };
             const enabledUser = await fetch(
-                `http://localhost:5000/users/${id}`,
+                (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -184,12 +184,12 @@ const NewUsersAdmin = () => {
 		// search contracts by client email and or caregiver email and or a range of dates and or status
 		try {
 			// console.log('statusSearch: ', statusSearch);
-			console.log('status: ', statusSearch);
-            console.log(`http://localhost:5000/users?user_email=${userEmail}&user_firstname=${userFirstname}&user_lastname=${userLastname}&status=${statusSearch}`);
+			// console.log('status: ', statusSearch);
+            // console.log(`http://localhost:5000/users?user_email=${userEmail}&user_firstname=${userFirstname}&user_lastname=${userLastname}&status=${statusSearch}`);
 			
 			// get coinciding user IDS from user table first, then get contracts
 
-            const response = await fetch(`http://localhost:5000/users_filtered?user_email=${userEmail}&user_firstname=${userFirstname}&user_lastname=${userLastname}&status=${statusSearch}`);
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users_filtered?user_email=${userEmail}&user_firstname=${userFirstname}&user_lastname=${userLastname}&status=${statusSearch}`);
             const jsonData = await response.json();
 
 			console.log('----------------------------------- users: ', jsonData);
@@ -337,31 +337,6 @@ const NewUsersAdmin = () => {
 
 		return sortedArray;
 	}
-
-    // get all users function
-    // const getContracts = async () => {
-    //     try {
-    //         console.log(`http://localhost:5000/contract?user_id=${userId}`)
-
-    //         const response = await fetch(`http://localhost:5000/contract?user_id=${userId}`);
-    //         const jsonData = await response.json();
-
-	// 		jsonData.sort((a, b) => {
-	// 			const dateA = moment(a.date, 'DD/MM/YYYY');
-	// 			const dateB = moment(b.date, 'DD/MM/YYYY');
-	// 			return dateB.diff(dateA);
-	// 		});
-
-	// 		console.log('jsonData: ');
-	// 		console.log(jsonData);
-
-    //         setContracts(jsonData);
-	// 		setDisplayedContracts(jsonData);
-
-    //     } catch (error) {
-    //         console.error(error.message);
-    //     }
-    // };
 
     const getUserData = async () => {
 		const response = await fetch("http://localhost:5000/users/" + userId);

@@ -101,7 +101,7 @@ const ArtistasAdmin = () => {
 	console.log('selected dates interval: ', selectedDatesInterval);
 
     const getUserData = async () => {
-		const response = await fetch("http://localhost:5000/users/" + userId);
+		const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `users/${userId}`);
 		const jsonData = await response.json();
 
 		console.log('---- inside getUserData ----');
@@ -113,7 +113,7 @@ const ArtistasAdmin = () => {
 	// get all users function
 	const getArtists = async () => {
         try {
-            const response = await fetch("http://localhost:5000/artists/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `artists/`);
             const jsonData = await response.json();
 
             setArtists(jsonData);
