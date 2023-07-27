@@ -137,7 +137,7 @@ const GenerosAdmin = () => {
 							+
 						</button>
 					</div>
-					<div className='h-screen bg-gradient-to-b from-gray-100 to-gray-300'>
+					<div className='h-screen bg-gradient-to-b from-white to-gray-300'>
 
 						<AddGenero
 							genres={genres}

@@ -308,12 +308,12 @@ const UserLanding = () => {
         }
     };
 
-	// console.log('playlist songs: ', playlistSongs)
+	console.log('process.env.REACT_APP_SERVER: ', (process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`))
 
 	// get all songs
 	const getSongs = async () => {
         try {
-            const response = await fetch("http://localhost:5000/songs/");
+            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/`);
             const jsonData = await response.json();
 
             setSongs(jsonData);

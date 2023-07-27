@@ -11,7 +11,6 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
-import FechasHorarios from './FechasHorarios';
 
 const AddGenero = ( {genres, setGenres, show, onClose, displayedGenres, setDisplayedGenres} ) => {
 	const { isAuthenticated } = useContext(AuthContext);

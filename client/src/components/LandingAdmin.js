@@ -8,7 +8,6 @@ import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup, faRecordVinyl, faIcons } from '@fortawesome/free-solid-svg-icons';
 import {BsHeadphones} from 'react-icons/bs';
-import CuidadorBottomBar from './CuidadorBottomBar';
 
 const LandingAdmin = () => {
 	const { isAuthenticated } = useContext(AuthContext);

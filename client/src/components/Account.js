@@ -8,8 +8,6 @@ import { AuthContext } from './AuthContext';
 import UserEditData from './UserEditData';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faComment, faEnvelope, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import ClientBottomBar from './ClientBottomBar';
-import CuidadorBottomBar from './CuidadorBottomBar';
 
 const Account = () => {
 	const { isAuthenticated } = useContext(AuthContext);
@@ -112,13 +110,7 @@ const Account = () => {
 						<h1 className='flex justify-center font-bold text-lg py-4'>Mi perfil</h1>
 						<FontAwesomeIcon icon={faPenToSquare} className='text-2xl absolute right-5' onClick={handleShow} />
 					</div>
-					{ user.type === 1 && (
-						<CuidadorBottomBar/>
-					)}
-					{ user.type === 0 && (
-						<ClientBottomBar/>
-					)}
-					<div className='relative h-screen bg-gradient-to-b from-gray-100 to-gray-300 w-full flex flex-col items-center px-5 space-y-3'>
+					<div className='relative h-screen bg-gradient-to-b from-white to-gray-300 w-full flex flex-col items-center px-5 space-y-3'>
 						<h1 className='font-medium text-lg flex flex-row items-center gap-1'>Hola, <p className='p-1 px-2 bg-green-300 rounded-md'>{user.name}!</p>
 						</h1>
 

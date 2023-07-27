@@ -8,7 +8,6 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faHouse, faVolumeXmark, faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
-import ClientBottomBar from './ClientBottomBar';
 import moment from 'moment';
 import {BsFillPlayCircleFill, BsFillPauseCircleFill, BsFillSkipStartCircleFill, BsSkipEndCircleFill, BsFillSkipEndCircleFill} from 'react-icons/bs';
 // import { faHouse as heartSolido } from '@fortawesome/free-regular-svg-icons'

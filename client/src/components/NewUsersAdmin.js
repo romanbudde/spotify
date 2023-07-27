@@ -13,7 +13,6 @@ import Datepicker from "react-tailwindcss-datepicker";
 import '../css/datepicker.css';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import ClientBottomBar from './ClientBottomBar';
 import Paginate from './Paginate';
 import Select from 'react-select';
 
@@ -403,7 +402,7 @@ const NewUsersAdmin = () => {
 							+
 						</button>
 					</div>
-					<div className='min-h-screen pb-16 bg-gradient-to-b from-gray-100 to-gray-300'>
+					<div className='min-h-screen pb-16 bg-gradient-to-b from-white to-gray-300'>
 						<div className='w-3/5 mx-auto'>
 							<div className='flex flex-col mx-5 mt-2 gap-3'>
 								<div className='flex flex-col'>

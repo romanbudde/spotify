@@ -16,13 +16,9 @@ import Datepicker from "react-tailwindcss-datepicker";
 import '../css/datepicker.css';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import ClientBottomBar from './ClientBottomBar';
 import CancionItem from './CancionItem';
 import Paginate from './Paginate';
 import Select from 'react-select';
-
-import mercado_pago_icon from "../images/mercado-pago-icon.svg";
-import cash_bill_icon from "../images/cash-bill.svg";
 
 const CancionesAdmin = () => {
 	const navigate = useNavigate();
@@ -183,7 +179,6 @@ const CancionesAdmin = () => {
 		return (
 			<Fragment>
                 <div className='relative'>
-					{/* <ClientBottomBar /> */}
 					<div className='flex flex-row items-center justify-center relative border-b-2 border-b-gray-200'>
 						<FontAwesomeIcon
 							className='absolute left-5 cursor-pointer'
@@ -198,7 +193,7 @@ const CancionesAdmin = () => {
 							+
 						</button>
 					</div>
-					<div className='h-screen bg-gradient-to-b from-gray-100 to-gray-300'>
+					<div className='h-screen bg-gradient-to-b from-white to-gray-300'>
 
 						<AddCancion
 							songs={songs}

@@ -11,7 +11,6 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
-import FechasHorarios from './FechasHorarios';
 import Select from 'react-select';
 
 const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplayedSongs, optionsArtists, optionsGenres} ) => {
