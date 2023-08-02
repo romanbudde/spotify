@@ -81,8 +81,11 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 
 			// upload song file first
 			// e.preventDefault();
-			console.log('file: ', file);
-			console.log('file.data.name: ', file.data.name);
+			// console.log('file: ', file);
+			// console.log('file.data.name: ', file.data.name);
+
+			let song_upload_success = false;
+			
 			let formData = new FormData();
 			formData.append('file', file.data);
 			// formData.append('song_id', userId);
@@ -96,6 +99,7 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 					// setStatus(result.statusText);
 					setSongUploadError(false);
 					setSongUploadSuccess(true);
+					song_upload_success = true;
 					setSongUploadMessage('Archivo subido con éxito!');
 				}
 				else {
@@ -106,40 +110,43 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 				}
 			})
 
-            const body = { ...values };
-			body.file = file.data.name;
-            console.log(JSON.stringify(body));
-            console.log('---- end of body to be submitted ----');
-            let newSong = {};
-            const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
-                .then(response => response.json())
-                .then(result => {
-                    if(result.id){
-                        console.log('add user result: ');
-                        console.log(result);
-                        newSong = result;
-                    }
-                });
-
-            // console.log(response.json();
-
-            setSongs(newSong.id ? [...songs, newSong] : songs);
-            setDisplayedSongs(newSong.id ? [...songs, newSong] : songs);
-
-			if (newSong.id){
-				setEditDataMessageError(false);
-				setDisplayEditDataMessage(true);
+			if(song_upload_success) {
+				const body = { ...values };
+				body.file = file.data.name;
+				console.log(JSON.stringify(body));
+				console.log('---- end of body to be submitted ----');
+				let newSong = {};
+				const response = await fetch((process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : `http://localhost:5000/`) + `songs/`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(body)
+				})
+					.then(response => response.json())
+					.then(result => {
+						if(result.id){
+							console.log('add user result: ');
+							console.log(result);
+							newSong = result;
+						}
+					});
+	
+				// console.log(response.json();
+	
+				setSongs(newSong.id ? [...songs, newSong] : songs);
+				setDisplayedSongs(newSong.id ? [...songs, newSong] : songs);
+	
+				if (newSong.id){
+					setEditDataMessageError(false);
+					setDisplayEditDataMessage(true);
+				}
+				else {
+					setEditDataMessageError(true);
+					setDisplayEditDataMessage(true);
+				}
 			}
-			else {
-				setEditDataMessageError(true);
-				setDisplayEditDataMessage(true);
-			}
+
 
             // window.location = '/';
         }
@@ -277,8 +284,8 @@ const AddCancion = ( {songs, setSongs, show, onClose, displayedSongs, setDisplay
 											</input>
 										</div>
 										{songUploadError && (
-											<div className='bg-red-500 mx-5 p-2 rounded-lg'>
-												<p className='text-center text-white font-medium'>{songUploadMessage}</p>
+											<div className='mt-3 rounded-lg'>
+												<p className='text-left text-red-500 font-medium'>{songUploadMessage}</p>
 											</div>
 										)}
 										{songUploadSuccess && (

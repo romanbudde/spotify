@@ -134,7 +134,7 @@ const EditArtist = ({ artist, artists, setArtists, displayedArtists, setDisplaye
 								<p className='font-bold my-2'>Edite sus datos</p>
 								<div className='flex flex-col py-2'>
 									<label className="block mb-2 mr-auto text-sm font-medium text-gray-900 dark:text-white">
-										Sede ID (no editable)
+										Artist ID (no editable)
 									</label>
 									<Field
 										name="id"
